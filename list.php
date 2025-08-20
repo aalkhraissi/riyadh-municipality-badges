@@ -79,6 +79,11 @@ if (!is_array($data)) {
 <div class="table-responsive">
   <table id="dataTable" class="table table-bordered w-100" style="direction: rtl;">
     <thead>
+      <th class="text-center fw-bold w-50px">
+        <div class="form-check form-check-sm form-check-custom form-check-solid">
+          <input class="form-check-input" type="checkbox" id="selectAll" />
+        </div>
+      </th>
       <th class="text-center fw-bold w-50px">#</th>
       <th class="text-center fw-bold">الاسم</th>
       <th class="text-center fw-bold">المسمى الوظيفي</th>
@@ -99,6 +104,19 @@ if (!is_array($data)) {
           <i class="ki-duotone ki-cloud-download fs-1">
           <span class="path1"></span>
           <span class="path2"></span>
+          </i>
+        </button>
+
+        <button type="button" class="btn btn-secondary btn-sm btn-icon ms-5" id="downloadSelectedBtn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="تحميل رموز QR المحددة" disabled>
+          <i class="ki-duotone ki-scan-barcode fs-1">
+          <span class="path1"></span>
+          <span class="path2"></span>
+          <span class="path3"></span>
+          <span class="path4"></span>
+          <span class="path5"></span>
+          <span class="path6"></span>
+          <span class="path7"></span>
+          <span class="path8"></span>
           </i>
         </button>
 

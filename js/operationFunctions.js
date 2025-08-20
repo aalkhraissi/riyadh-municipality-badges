@@ -112,6 +112,52 @@ $("#cancelEdit").click(function () {
 	$("#editModal").hide();
 });
 
+// Handle checkbox selection
+$(document).on("change", ".checkbox", function () {
+	updateDownloadButton();
+});
+
+// Handle select all checkbox
+$(document).on("change", "#selectAll", function () {
+	var checked = $(this).prop("checked");
+	$(".checkbox").prop("checked", checked);
+	updateDownloadButton();
+});
+
+// Update download button state based on selection
+function updateDownloadButton() {
+	var selectedCount = $(".checkbox:checked").length;
+	var totalCount = $(".checkbox").length;
+
+	if (selectedCount > 0) {
+		$("#downloadSelectedBtn").prop("disabled", false);
+	} else {
+		$("#downloadSelectedBtn").prop("disabled", true);
+	}
+
+	// Update select all checkbox state
+	if (selectedCount === totalCount && totalCount > 0) {
+		$("#selectAll").prop("checked", true);
+	} else {
+		$("#selectAll").prop("checked", false);
+	}
+}
+
+// Handle download selected QR codes button
+$(document).on("click", "#downloadSelectedBtn", function () {
+	var selectedIds = [];
+	$(".checkbox:checked").each(function () {
+		selectedIds.push($(this).data("id"));
+	});
+
+	if (selectedIds.length > 0) {
+		// Redirect to PHP script to generate and download multiple QR codes
+		window.location.href =
+			"download_multiple_qr.php?ids=" +
+			encodeURIComponent(selectedIds.join(","));
+	}
+});
+
 $(document).on("click", ".downloadBtn", function () {
 	var id = $(this).data("id");
 	// Redirect to PHP script to generate and download QR

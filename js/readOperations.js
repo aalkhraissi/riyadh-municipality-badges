@@ -78,25 +78,32 @@ function renderTable() {
 		$.each(displaySlice, function (i, item) {
 			$("#dataTable tbody").append(
 				`<tr data-id="${item.id}">
+			<td class="text-center">
+			<div class="form-check form-check-sm form-check-custom form-check-solid me-3 d-inline-block">
+            	<input class="form-check-input checkbox" type="checkbox"
+				data-id="${item.id}" />
+            </div>
+			</td>
 			<td class="text-center">${escapeHtml(padZero(item.number, 3))}</td>
             <td class="text-center">${escapeHtml(item.name)}</td>
-			<td class="text-center">${escapeHtml(item.position)}</td>
-            <td class="text-center">${escapeHtml(item.email)}</td>
-            <td class="text-center">
-			 <button class="btn btn-icon btn-sm btn-secondary downloadBtn" data-id="${
-					item.id
-				}">
-				<i class="ki-duotone ki-scan-barcode fs-1">
-				<span class="path1"></span>
-				<span class="path2"></span>
-				<span class="path3"></span>
-				<span class="path4"></span>
-				<span class="path5"></span>
-				<span class="path6"></span>
-				<span class="path7"></span>
-				<span class="path8"></span>
-				</i>
-			 </button>
+  <td class="text-center">${escapeHtml(item.position)}</td>
+           <td class="text-center">${escapeHtml(item.email)}</td>
+           <td class="text-center">
+           
+   <button class="btn btn-icon btn-sm btn-secondary downloadBtn" data-id="${
+			item.id
+		}">
+   <i class="ki-duotone ki-scan-barcode fs-1">
+   <span class="path1"></span>
+   <span class="path2"></span>
+   <span class="path3"></span>
+   <span class="path4"></span>
+   <span class="path5"></span>
+   <span class="path6"></span>
+   <span class="path7"></span>
+   <span class="path8"></span>
+   </i>
+   </button>
               <button class="btn btn-icon btn-sm btn-light-info previewBtn">
 				<i class="ki-duotone ki-eye fs-1">
 				<span class="path1"></span>
