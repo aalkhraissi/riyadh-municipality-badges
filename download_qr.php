@@ -24,7 +24,7 @@ if (!$record) {
 }
 
 // Prepare URL data for QR code
-$url = "$base_url/record.php?id=" . urlencode($record['id']);
+$url = "$base_url/preview.php?id=" . urlencode($record['id']);
 // 'yourdomain.com/record.php' should point to your record display URL
 
 // Generate the QR code URL
