@@ -8,9 +8,4 @@ $db_host = "127.0.0.1";
 $db_name = "records";
 $db_usr = "root";
 $db_password = "";
-
-// $db_host = "localhost";
-// $db_name = "u591626288_db";
-// $db_usr = "u591626288_usr";
-// $db_password = "J#bBlgCg!u3";
 ?>
