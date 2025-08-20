@@ -37,7 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 
  
 <div class="w-400px h-100 d-flex flex-center">
-  
+        <div class="d-flex flex-center flex-column flex-row-fluid">
+          <img class="mx-auto mw-100 w-250px mb-10" src="logo.svg" alt="">
 <!--begin::Login-->
 <form method="post" class="form w-100" style="direction:rtl" action="">
   <?php if (isset($error)) echo "<div class='text-danger fs-4 mb-5 text-center'>$error</div>"; ?>
@@ -52,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
   </div>
 </form>
 <!--end::Login-->
+</div>
 </div>
 
 
