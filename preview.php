@@ -6,7 +6,7 @@ if (!isset($_GET['id'])) {
 $recordId = $_GET['id'];
 
 // Load database
-require_once 'config.php';
+require_once './config/config.php';
 require_once 'db.php';
 
 try {

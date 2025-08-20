@@ -10,7 +10,7 @@ if (!isset($_SESSION['logged_in'])) {
 
 // Proceed with the existing code to load data and display table
 // Load data from database
-require_once 'config.php';
+require_once './config/config.php';
 require_once 'db.php';
 
 try {

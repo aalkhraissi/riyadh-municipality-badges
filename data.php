@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once './config/config.php';
 require_once 'db.php'; // Your database class
 
 $db = new Database($db_host, $db_name, $db_usr, $db_password);
