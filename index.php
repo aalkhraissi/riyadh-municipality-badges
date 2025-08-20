@@ -1,13 +1,19 @@
 <?php
 session_start();
 require_once './config/config.php';
+require_once 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     $username_input = $_POST['username'];
     $password_input = $_POST['password'];
 
-    if ($username_input === $valid_username && password_verify($password_input, $hashed_password)) {
+    // Create database instance and authenticate user
+    $db = new Database($db_host, $db_name, $db_usr, $db_password);
+    if ($db->authenticateUser($username_input, $password_input)) {
+        // Get user information
+        $user = $db->getUserByName($username_input);
         $_SESSION['logged_in'] = true;
+        $_SESSION['user_name'] = $user['name']; // Store user's name in session
         header('Location: list.php');
         exit;
     } else {

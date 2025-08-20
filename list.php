@@ -61,7 +61,7 @@ if (!is_array($data)) {
   </div>
   <div class=""></div>
   <div class="fs-1" style="direction: rtl;">
-    أهلاً بك، Admin
+    أهلاً بك، <?php echo isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'User'; ?>
   </div>
 </div>
 <div class="separator separator-dashed my-10"></div>
