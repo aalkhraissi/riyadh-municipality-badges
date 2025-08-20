@@ -79,7 +79,7 @@ function renderTable() {
 			$("#dataTable tbody").append(
 				`<tr data-id="${item.id}">
 			<td class="text-center">
-			<div class="form-check form-check-sm form-check-custom form-check-solid me-3 d-inline-block">
+			<div class="form-check form-check-sm form-check-custom form-check-solid d-inline-block">
             	<input class="form-check-input checkbox" type="checkbox"
 				data-id="${item.id}" />
             </div>

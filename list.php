@@ -80,7 +80,7 @@ if (!is_array($data)) {
   <table id="dataTable" class="table table-bordered w-100" style="direction: rtl;">
     <thead>
       <th class="text-center fw-bold w-50px">
-        <div class="form-check form-check-sm form-check-custom form-check-solid">
+        <div class="form-check form-check-sm form-check-custom form-check-solid d-inline-block">
           <input class="form-check-input" type="checkbox" id="selectAll" />
         </div>
       </th>
