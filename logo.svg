@@ -5,14 +5,18 @@
       /* Load your custom font for Arabic */
       @font-face {
         font-family: 'Somar';
-        src: url('css/Somar-Regular.otf') format('opentype');
+        src: url('css/Somar-Regular.woff2') format('woff2'),
+          url('css/Somar-Regular.woff') format('woff'),
+          url('css/Somar-Regular.ttf') format('truetype');
         font-weight: normal;
         font-style: normal;
       }
 
       @font-face {
         font-family: 'Somar';
-        src: url('css/Somar-Bold.otf') format('opentype');
+        src: url('css/Somar-Bold.woff2') format('woff2'),
+          url('css/Somar-Bold.woff') format('woff'),
+          url('css/Somar-Bold.ttf') format('truetype');
         font-weight: bold;
         font-style: normal;
       }
@@ -29,6 +33,7 @@
         font-weight: 700;
       }
 
+      .cls-2,
       .cls-3 {
         fill: #0b6d38;
       }
