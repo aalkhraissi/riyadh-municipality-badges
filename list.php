@@ -126,17 +126,41 @@ if (!is_array($data)) {
       <option value="25">25</option>
       <option value="50">50</option>
       <option value="100">100</option>
+      <option value="all">الكل</option>
     </select>
   </div>
-  <ul class="pagination align-items-center mb-0">
-    <li class="page-item previous disabled me-0" id="prevPage">
-      <a href="#" class="page-link"><i class="previous"></i></a>
-    </li>
-    <li class="mx-5" id="pageInfo"></li>
-    <li class="page-item next disabled" id="nextPage">
-      <a href="#" class="page-link"><i class="next"></i></a>
-    </li>
-  </ul>
+  <div class="d-flex align-items-center">
+    <div class="me-5" id="recordsInfo" style="direction: rtl;"></div>
+    <ul class="pagination align-items-center mb-0" id="paginationContainer">
+      <li class="page-item first disabled mx-0" id="firstPage">
+        <a href="#" class="page-link">
+          <i class="ki-duotone ki-double-left fs-1">
+          <span class="path1"></span>
+          <span class="path2"></span>
+          </i>
+        </a>
+      </li>
+      <li class="page-item previous disabled mx-0" id="prevPage">
+        <a href="#" class="page-link">
+           <i class="ki-duotone ki-left fs-1"></i>
+        </a>
+      </li>
+      <!-- Page numbers will be inserted here by JavaScript -->
+      <li class="page-item next disabled mx-0" id="nextPage">
+        <a href="#" class="page-link">
+          <i class="ki-duotone ki-right fs-1"></i>
+        </a>
+      </li>
+      <li class="page-item last disabled mx-0" id="lastPage">
+        <a href="#" class="page-link ">
+           <i class="ki-duotone ki-double-right fs-1">
+          <span class="path1"></span>
+          <span class="path2"></span>
+          </i>
+        </a>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <!-- Add modal -->

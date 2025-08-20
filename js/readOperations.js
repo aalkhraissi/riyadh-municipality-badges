@@ -130,18 +130,97 @@ function renderTable() {
 // Update pagination info and button states
 function updatePageInfo() {
 	var totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
-	$("#pageInfo").text(`${currentPage} / ${totalPages}`);
 
-	if (currentPage <= 1) {
-		document.getElementById("prevPage").classList.add("disabled");
+	// Calculate records information
+	var totalRecords = filteredData.length;
+	var recordsInfoText = "";
+
+	if (rowsPerPage >= totalRecords) {
+		// Show all records
+		recordsInfoText = "عرض الكل من " + totalRecords + " سجل";
 	} else {
-		document.getElementById("prevPage").classList.remove("disabled");
+		var startRecord = (currentPage - 1) * rowsPerPage + 1;
+		var endRecord = Math.min(currentPage * rowsPerPage, filteredData.length);
+		recordsInfoText =
+			"عرض " +
+			startRecord +
+			" إلى " +
+			endRecord +
+			" من " +
+			totalRecords +
+			" سجل";
 	}
 
-	if (currentPage >= totalPages) {
-		document.getElementById("nextPage").classList.add("disabled");
+	// Update records information
+	$("#recordsInfo").text(recordsInfoText);
+
+	// Clear existing page number buttons
+	$("#pageNumbers").remove();
+
+	// Hide pagination controls when showing all records
+	if (rowsPerPage >= totalRecords) {
+		$("#paginationContainer").hide();
+		return;
 	} else {
-		document.getElementById("nextPage").classList.remove("disabled");
+		$("#paginationContainer").show();
+	}
+
+	// Create container for page numbers
+	var pageNumbersContainer = $(
+		'<li id="pageNumbers" class="d-flex align-items-center mx-2"></li>',
+	);
+
+	// Generate page number buttons (show up to 5 pages around current page)
+	var startPage = Math.max(1, currentPage - 2);
+	var endPage = Math.min(totalPages, currentPage + 2);
+
+	// If we're near the beginning, show more pages at the end
+	if (endPage - startPage < 4) {
+		endPage = Math.min(totalPages, startPage + 4);
+	}
+
+	// If we're near the end, show more pages at the beginning
+	if (endPage - startPage < 4) {
+		startPage = Math.max(1, endPage - 4);
+	}
+
+	// Add page number buttons
+	for (var i = startPage; i <= endPage; i++) {
+		var pageButton = $(
+			` <li class="page-item ${
+				i === currentPage ? "active" : ""
+			}"><a href="#" class="page-link mx-1">${i}</a></li>`,
+		);
+		// Use a closure to capture the page number
+		(function (pageNum) {
+			pageButton.click(function (e) {
+				e.preventDefault();
+				currentPage = pageNum;
+				renderTable();
+			});
+		})(i);
+		pageNumbersContainer.append(pageButton);
+	}
+
+	// Insert page numbers between prev and next buttons
+	$("#prevPage").after(pageNumbersContainer);
+
+	// Update first page button
+	if (currentPage <= 1) {
+		$("#firstPage").addClass("disabled");
+		$("#prevPage").addClass("disabled");
+	} else {
+		$("#firstPage").removeClass("disabled");
+		$("#prevPage").removeClass("disabled");
+	}
+
+	// Update last page button
+	if (currentPage >= totalPages) {
+		$("#nextPage").addClass("disabled");
+		$("#lastPage").addClass("disabled");
+	} else {
+		$("#nextPage").removeClass("disabled");
+		$("#lastPage").removeClass("disabled");
 	}
 }
 
@@ -160,12 +239,37 @@ $("#nextPage").click(function () {
 	}
 });
 
-// Handle rows per page change
-$("#rowsPerPage").change(function () {
-	var newRowsPerPage = parseInt($(this).val());
-	if (!isNaN(newRowsPerPage) && newRowsPerPage > 0) {
-		rowsPerPage = newRowsPerPage;
+// Handle first page button click
+$("#firstPage").click(function () {
+	if (currentPage > 1) {
 		currentPage = 1;
 		renderTable();
+	}
+});
+
+// Handle last page button click
+$("#lastPage").click(function () {
+	var totalPages = Math.ceil(filteredData.length / rowsPerPage);
+	if (currentPage < totalPages) {
+		currentPage = totalPages;
+		renderTable();
+	}
+});
+
+// Handle rows per page change
+$("#rowsPerPage").change(function () {
+	var newRowsPerPage = $(this).val();
+	if (newRowsPerPage === "all") {
+		// Show all records
+		rowsPerPage = filteredData.length;
+		currentPage = 1;
+		renderTable();
+	} else {
+		var rows = parseInt(newRowsPerPage);
+		if (!isNaN(rows) && rows > 0) {
+			rowsPerPage = rows;
+			currentPage = 1;
+			renderTable();
+		}
 	}
 });
