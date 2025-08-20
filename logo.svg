@@ -4,7 +4,7 @@
     <style>
       @font-face {
         font-family: "Somar-Bold";
-        src: url("fonts/Somar-Bold.otf");
+        src: url("css/Somar-Bold.otf");
         font-weight: bold;
         font-style: bold;
       }
@@ -21,7 +21,7 @@
       }
 
       .cls-2 {
-        font-family: Somar-Bold, Somar;
+        font-family: "Somar-Bold", "Somar";
         font-size: 22px;
         font-weight: 700;
       }

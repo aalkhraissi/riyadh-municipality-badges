@@ -190,6 +190,20 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "Somar-Bold";
+  src: url("Somar-Bold.otf");
+  font-weight: bold;
+  font-style: bold;
+}
+
+@font-face {
+  font-family: "Somar";
+  src: url("Somar-Regular.otf");
+  font-weight: normal;
+  font-style: normal;
+}
+
 *,
 *::before,
 *::after {
