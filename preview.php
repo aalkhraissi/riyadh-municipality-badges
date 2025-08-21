@@ -42,7 +42,7 @@ if (!$record) {
     <div class="d-flex flex-row flex-column-fluid">
       <div class="d-flex flex-column flex-row-fluid w-lg-50 p-10">
         <div class="d-flex flex-center flex-column flex-row-fluid">
-          <img class="mx-auto mw-100 w-250px mb-10" src="logo.svg" alt="">
+          <img class="mx-auto mw-100 w-250px mb-10" src="logo.png" alt="">
           <div class="bg-body d-flex flex-center rounded-4 w-md-600px">
             <div class="d-flex flex-column align-items-center p-0 border-0 mb-10">
 				<div class="d-flex flex-column align-items-center w-100">
