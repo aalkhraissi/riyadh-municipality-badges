@@ -262,7 +262,8 @@ $("#searchInput").on("input", function () {
 	filteredData = data.filter(function (item) {
 		return (
 			item.name.toLowerCase().includes(query) ||
-			item.number.toString().includes(query)
+			item.number.toString().includes(query) ||
+			(item.department && item.department.toLowerCase().includes(query))
 		);
 	});
 	currentPage = 1;
