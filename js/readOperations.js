@@ -73,7 +73,7 @@ function renderTable() {
 	if (displaySlice.length === 0) {
 		$("#dataTable tbody").html(
 			`<tr id="noDataMessage" class="text-center">
-	               <td colspan="6">لا يوجد معلومات في هذا الجدول</td>
+	               <td colspan="7">لا يوجد معلومات في هذا الجدول</td>
 	           </tr>`,
 		);
 	} else {
@@ -87,11 +87,11 @@ function renderTable() {
 		          </div>
 			</td>
 			<td class="text-center">${escapeHtml(padZero(item.number, 3))}</td>
-		          <td class="text-center">${escapeHtml(item.name)}</td>
-		<td class="text-center">${escapeHtml(item.position)}</td>
-		         <td class="text-center">${escapeHtml(item.department || "")}</td>
-		         <td class="text-center">${escapeHtml(item.email)}</td>
-		         <td class="text-center">
+		        <td class="text-center">${escapeHtml(item.name)}</td>
+				<td class="text-center">${escapeHtml(item.position)}</td>
+		        <td class="text-center">${escapeHtml(item.department || "")}</td>
+		        <td class="text-center">${escapeHtml(item.email)}</td>
+		        <td class="text-center">
 
 		 <button class="btn btn-icon btn-sm btn-secondary downloadBtn" data-id="${
 				item.id
