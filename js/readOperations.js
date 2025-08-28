@@ -43,7 +43,8 @@ function filterData() {
 	filteredData = data.filter(function (item) {
 		return (
 			(item.name && item.name.toLowerCase().includes(query)) ||
-			(item.number && item.number.toString().includes(query))
+			(item.number && item.number.toString().includes(query)) ||
+			(item.department && item.department.toLowerCase().includes(query))
 		);
 	});
 	currentPage = 1;
@@ -55,7 +56,8 @@ function filterDataKeepPage() {
 	filteredData = data.filter(function (item) {
 		return (
 			(item.name && item.name.toLowerCase().includes(query)) ||
-			(item.number && item.number.toString().includes(query))
+			(item.number && item.number.toString().includes(query)) ||
+			(item.department && item.department.toLowerCase().includes(query))
 		);
 	});
 	// Keep current page
@@ -71,8 +73,8 @@ function renderTable() {
 	if (displaySlice.length === 0) {
 		$("#dataTable tbody").html(
 			`<tr id="noDataMessage" class="text-center">
-                <td colspan="5">لا يوجد معلومات في هذا الجدول</td>
-            </tr>`,
+	               <td colspan="6">لا يوجد معلومات في هذا الجدول</td>
+	           </tr>`,
 		);
 	} else {
 		$.each(displaySlice, function (i, item) {
@@ -80,44 +82,45 @@ function renderTable() {
 				`<tr data-id="${item.id}">
 			<td class="text-center">
 			<div class="form-check form-check-sm form-check-custom form-check-solid d-inline-block">
-            	<input class="form-check-input checkbox" type="checkbox"
+		          	<input class="form-check-input checkbox" type="checkbox"
 				data-id="${item.id}" />
-            </div>
+		          </div>
 			</td>
 			<td class="text-center">${escapeHtml(padZero(item.number, 3))}</td>
-            <td class="text-center">${escapeHtml(item.name)}</td>
-  <td class="text-center">${escapeHtml(item.position)}</td>
-           <td class="text-center">${escapeHtml(item.email)}</td>
-           <td class="text-center">
-           
-   <button class="btn btn-icon btn-sm btn-secondary downloadBtn" data-id="${
-			item.id
-		}">
-   <i class="ki-duotone ki-scan-barcode fs-1">
-   <span class="path1"></span>
-   <span class="path2"></span>
-   <span class="path3"></span>
-   <span class="path4"></span>
-   <span class="path5"></span>
-   <span class="path6"></span>
-   <span class="path7"></span>
-   <span class="path8"></span>
-   </i>
-   </button>
-              <button class="btn btn-icon btn-sm btn-light-info previewBtn">
+		          <td class="text-center">${escapeHtml(item.name)}</td>
+		<td class="text-center">${escapeHtml(item.position)}</td>
+		         <td class="text-center">${escapeHtml(item.department || "")}</td>
+		         <td class="text-center">${escapeHtml(item.email)}</td>
+		         <td class="text-center">
+
+		 <button class="btn btn-icon btn-sm btn-secondary downloadBtn" data-id="${
+				item.id
+			}">
+		 <i class="ki-duotone ki-scan-barcode fs-1">
+		 <span class="path1"></span>
+		 <span class="path2"></span>
+		 <span class="path3"></span>
+		 <span class="path4"></span>
+		 <span class="path5"></span>
+		 <span class="path6"></span>
+		 <span class="path7"></span>
+		 <span class="path8"></span>
+		 </i>
+		 </button>
+		            <button class="btn btn-icon btn-sm btn-light-info previewBtn">
 				<i class="ki-duotone ki-eye fs-1">
 				<span class="path1"></span>
 				<span class="path2"></span>
 				<span class="path3"></span>
 				</i>
 			  </button>
-              <button class="btn btn-icon btn-sm btn-light-warning editBtn">
+		            <button class="btn btn-icon btn-sm btn-light-warning editBtn">
 				<i class="ki-duotone ki-notepad-edit fs-1">
 				<span class="path1"></span>
 				<span class="path2"></span>
 				</i>
 			  </button>
-              <button class="btn btn-icon btn-sm btn-light-danger deleteBtn">
+		            <button class="btn btn-icon btn-sm btn-light-danger deleteBtn">
 				<i class="ki-duotone ki-trash fs-1">
 				<span class="path1"></span>
 				<span class="path2"></span>
@@ -126,8 +129,8 @@ function renderTable() {
 				<span class="path5"></span>
 				</i>
 			  </button>
-            </td>
-          </tr>`,
+		          </td>
+		        </tr>`,
 			);
 		});
 	}

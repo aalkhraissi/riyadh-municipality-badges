@@ -16,7 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'number' => intval($_POST['number']),
                 'name' => $_POST['name'],
                 'email' => $_POST['email'],
-                'position' => $_POST['position']
+                'position' => $_POST['position'],
+                'department' => $_POST['department'] ?? ''
             ];
             $db->insert($record);
             echo json_encode(['status' => 'success', 'entry' => $record]);
@@ -26,7 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'id' => $_POST['id'],
                 'name' => $_POST['name'],
                 'email' => $_POST['email'],
-                'position' => $_POST['position']
+                'position' => $_POST['position'],
+                'department' => $_POST['department'] ?? ''
             ];
             $db->update($record);
             echo json_encode(['status' => 'success']);

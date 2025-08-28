@@ -36,9 +36,9 @@ class Database {
     }
 
     public function insert($record) {
-        $stmt = $this->pdo->prepare("REPLACE INTO records (id, number, name, email, position) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $this->pdo->prepare("REPLACE INTO records (id, number, name, email, position, department) VALUES (?, ?, ?, ?, ?, ?)");
         return $stmt->execute([
-            $record['id'], $record['number'], $record['name'], $record['email'], $record['position']
+            $record['id'], $record['number'], $record['name'], $record['email'], $record['position'], $record['department'] ?? ''
         ]);
     }
 
@@ -48,9 +48,9 @@ class Database {
     }
 
     public function update($record) {
-        $stmt = $this->pdo->prepare("UPDATE records SET name = ?, email = ?, position = ? WHERE id = ?");
+        $stmt = $this->pdo->prepare("UPDATE records SET name = ?, email = ?, position = ?, department = ? WHERE id = ?");
         return $stmt->execute([
-            $record['name'], $record['email'], $record['position'], $record['id']
+            $record['name'], $record['email'], $record['position'], $record['department'] ?? '', $record['id']
         ]);
     }
 
@@ -114,6 +114,24 @@ class Database {
             $stmt = $this->pdo->prepare("UPDATE users SET name = ? WHERE name = ? OR name = '' OR name IS NULL");
             $stmt->execute([$defaultName, 'Administrator']);
             return true;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function executeRawQuery($query) {
+        try {
+            return $this->pdo->exec($query);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function checkColumnExists($table, $column) {
+        try {
+            $stmt = $this->pdo->prepare("SHOW COLUMNS FROM $table LIKE ?");
+            $stmt->execute([$column]);
+            return $stmt->fetch() !== false;
         } catch (PDOException $e) {
             return false;
         }

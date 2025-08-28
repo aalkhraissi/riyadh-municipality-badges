@@ -27,6 +27,7 @@ $("#addForm").submit(function (e) {
 	var name = $("#addName").val().trim();
 	var email = $("#addEmail").val().trim();
 	var position = $("#addPosition").val().trim();
+	var department = $("#addDepartment").val().trim();
 
 	$.post(
 		"data.php",
@@ -36,6 +37,7 @@ $("#addForm").submit(function (e) {
 			name: name,
 			email: email,
 			position: position,
+			department: department,
 		},
 		function (response) {
 			if (response.status === "success") {
@@ -60,12 +62,14 @@ $(document).on("click", ".editBtn", function () {
 	var id = row.data("id");
 	var name = row.find("td").eq(1).text();
 	var position = row.find("td").eq(2).text();
-	var email = row.find("td").eq(3).text();
+	var department = row.find("td").eq(3).text();
+	var email = row.find("td").eq(4).text();
 
 	$("#editId").val(id);
 	$("#editName").val(name);
 	$("#editEmail").val(email);
 	$("#editPosition").val(position);
+	$("#editDepartment").val(department);
 	$("#editModal").show();
 });
 
@@ -76,6 +80,7 @@ $("#editForm").submit(function (e) {
 	var name = $("#editName").val().trim();
 	var email = $("#editEmail").val().trim();
 	var position = $("#editPosition").val().trim();
+	var department = $("#editDepartment").val().trim();
 
 	$.post(
 		"data.php",
@@ -84,6 +89,7 @@ $("#editForm").submit(function (e) {
 			id: id,
 			name: name,
 			position: position,
+			department: department,
 			email: email,
 		},
 		function (response) {
@@ -93,6 +99,7 @@ $("#editForm").submit(function (e) {
 					if (item.id === id) {
 						item.name = name;
 						item.position = position;
+						item.department = department;
 						item.email = email;
 					}
 				});

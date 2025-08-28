@@ -87,6 +87,7 @@ if (!is_array($data)) {
       <th class="text-center fw-bold w-50px">#</th>
       <th class="text-center fw-bold">الاسم</th>
       <th class="text-center fw-bold">المسمى الوظيفي</th>
+      <th class="text-center fw-bold">القسم</th>
       <th class="text-center fw-bold">البريد الإلكتروني</th>
       <th class="w-200px">
         <div class="d-flex flex-center">
@@ -197,6 +198,9 @@ if (!is_array($data)) {
             <input type="text" class="form-control form-control-solid" placeholder="المسمى الوظيفي" value="" id="addPosition" name="addPosition" required />
           </div>
           <div class="fv-row mb-5">
+            <input type="text" class="form-control form-control-solid" placeholder="القسم" value="" id="addDepartment" name="addDepartment" />
+          </div>
+          <div class="fv-row mb-5">
             <input type="email" class="form-control form-control-solid" placeholder="البريد الإلكتروني" value="" id="addEmail" name="addEmail" required />
           </div>
           <div class="text-center pt-5">
@@ -223,6 +227,9 @@ if (!is_array($data)) {
           </div>
           <div class="fv-row mb-5">
             <input type="text" class="form-control form-control-solid" placeholder="المسمى الوظيفي" value="" id="editPosition" name="editPosition" required />
+          </div>
+          <div class="fv-row mb-5">
+            <input type="text" class="form-control form-control-solid" placeholder="القسم" value="" id="editDepartment" name="editDepartment" />
           </div>
           <div class="fv-row mb-5">
             <input type="email" class="form-control form-control-solid" placeholder="البريد الإلكتروني" value="" id="editEmail" name="editEmail" required />

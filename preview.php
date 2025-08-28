@@ -46,18 +46,18 @@ if (!$record) {
           <div class="bg-body d-flex flex-center rounded-4 w-md-600px">
             <div class="d-flex flex-column align-items-center p-0 border-0 mb-10">
 				<div class="d-flex flex-column align-items-center w-100">
-					<span class="fw-bolder" style="color:#010101; font-size:40px">
-                        <?php echo htmlspecialchars(sprintf('%03d', $record['number'])); ?>
-                    </span>
 					<span class="fw-bolder" style="color:#006a46; font-size:30px">
                         <?php echo htmlspecialchars($record['name']); ?>
                     </span>
 					<span class="fw-simibold" style="color:#8ba0d0; font-size:20px">
-                        <?php echo htmlspecialchars($record['position']); ?>
-                    </span>
+					                   <?php echo htmlspecialchars($record['position']); ?>
+					               </span>
+					<span class="fw-simibold" style="color:#6c757d; font-size:18px">
+					                   <?php echo htmlspecialchars($record['department'] ?? ''); ?>
+					               </span>
 					<span class="" style="color:#0d6b30; font-size:15px">
-                        <?php echo htmlspecialchars($record['email']); ?>
-                    </span>
+					                   <?php echo htmlspecialchars($record['email']); ?>
+					               </span>
 				</div>
 			</div>
           </div>
