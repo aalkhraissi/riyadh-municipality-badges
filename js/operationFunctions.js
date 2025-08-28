@@ -60,10 +60,10 @@ $("#addForm").submit(function (e) {
 $(document).on("click", ".editBtn", function () {
 	var row = $(this).closest("tr");
 	var id = row.data("id");
-	var name = row.find("td").eq(1).text();
-	var position = row.find("td").eq(2).text();
+	var name = row.find("td").eq(2).text();
 	var department = row.find("td").eq(3).text();
-	var email = row.find("td").eq(4).text();
+	var position = row.find("td").eq(4).text();
+	var email = row.find("td").eq(5).text();
 
 	$("#editId").val(id);
 	$("#editName").val(name);

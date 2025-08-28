@@ -56,8 +56,8 @@ while (($row = fgetcsv($handle)) !== false) {
     $id = $rowData['id'] ?? '';
     $name = $rowData['name'] ?? '';
     $email = $rowData['email'] ?? '';
-    $position = $rowData['position'] ?? '';
     $department = $rowData['department'] ?? '';
+    $position = $rowData['position'] ?? '';
     
     // Skip rows without ID
     if (empty($id)) {

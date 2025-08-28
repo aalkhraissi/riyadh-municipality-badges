@@ -27,7 +27,7 @@ $output = fopen('php://output', 'w');
 fwrite($output, "\xEF\xBB\xBF");
 
 // Output the column headings
-fputcsv($output, ['id', 'number', 'name', 'email', 'position', 'department']);
+fputcsv($output, ['id', 'number', 'name', 'email', 'department', 'position']);
 
 // Loop through the records and output them
 foreach ($records as $record) {
@@ -37,8 +37,8 @@ foreach ($records as $record) {
         $record['number'],
         $record['name'],
         $record['email'],
-        $record['position'],
-        $record['department'] ?? ''
+        $record['department'] ?? '',
+        $record['position']
     ];
     fputcsv($output, $row);
 }

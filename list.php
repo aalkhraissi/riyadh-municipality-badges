@@ -37,6 +37,14 @@ if (!is_array($data)) {
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
   <link href="css/plugins.bundle.css" rel="stylesheet" type="text/css" />
   <link href="css/style.bundle.css" rel="stylesheet" type="text/css" />
+
+
+  <style>
+    .dropdown-toggle::after {
+    margin-left: 0px !important;
+    border: 0px !important;
+}
+    </style>
 </head>
 <body id="kt_body" class="app-blank bg-white">
 <div class="d-flex flex-column flex-root" id="kt_app_root">
@@ -73,6 +81,47 @@ if (!is_array($data)) {
   <div class="fv-row ms-auto w-100">
     <input type="text" id="searchInput" placeholder="البحث بالاسم او بالرقم" style="direction: rtl" class="form-control form-control-solid w-100">
   </div>
+  <div class="me-5">
+     <form id="importForm" enctype="multipart/form-data">
+          <label class="btn btn-icon btn-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title="رفع الملف">
+            <i class="ki-duotone ki-cloud-add fs-1">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            </i>
+            <input type="file" id="csvFileInput" name="csvfile" accept=".csv" style="display:none;" />
+          </label>
+        </form>
+  </div>
+  <div class="me-1">
+        <button type="button" class="btn btn-success btn-icon mx-5" id="exportBtn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="تحميل الملف">
+          <i class="ki-duotone ki-cloud-download fs-1">
+          <span class="path1"></span>
+          <span class="path2"></span>
+          </i>
+        </button>
+  </div>
+  <div class="me-1">
+    <button type="button" class="btn btn-secondary btn-icon ms-5" id="downloadSelectedBtn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="تحميل رموز QR المحددة" disabled>
+      <i class="ki-duotone ki-scan-barcode fs-1">
+      <span class="path1"></span>
+      <span class="path2"></span>
+      <span class="path3"></span>
+      <span class="path4"></span>
+      <span class="path5"></span>
+      <span class="path6"></span>
+      <span class="path7"></span>
+      <span class="path8"></span>
+      </i>
+    </button>
+  </div>
+  <div class="me-1">
+         <button type="button" class="btn btn-primary btn-icon addBtn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="إضافة موظف جديد">
+          <i class="ki-duotone ki-abstract-10 fs-1">
+          <span class="path1"></span>
+          <span class="path2"></span>
+          </i>
+        </button>
+  </div>
 </div>
 
 <!-- begin::DataTable -->
@@ -86,47 +135,17 @@ if (!is_array($data)) {
       </th>
       <th class="text-center fw-bold w-50px">#</th>
       <th class="text-center fw-bold">الاسم</th>
-      <th class="text-center fw-bold">المسمى الوظيفي</th>
       <th class="text-center fw-bold">القسم</th>
+      <th class="text-center fw-bold">المسمى الوظيفي</th>
       <th class="text-center fw-bold">البريد الإلكتروني</th>
-      <th class="w-200px">
+      <th class="w-50px">
         <div class="d-flex flex-center">
-         <form id="importForm" enctype="multipart/form-data">
-          <label class="btn btn-icon btn-sm btn-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title="رفع الملف">
-            <i class="ki-duotone ki-cloud-add fs-1">
-            <span class="path1"></span>
-            <span class="path2"></span>
-            </i>
-            <input type="file" id="csvFileInput" name="csvfile" accept=".csv" style="display:none;" />
-          </label>
-        </form>
+        
 
-        <button type="button" class="btn btn-success btn-sm btn-icon mx-5" id="exportBtn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="تحميل الملف">
-          <i class="ki-duotone ki-cloud-download fs-1">
-          <span class="path1"></span>
-          <span class="path2"></span>
-          </i>
-        </button>
 
-        <button type="button" class="btn btn-secondary btn-sm btn-icon ms-5" id="downloadSelectedBtn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="تحميل رموز QR المحددة" disabled>
-          <i class="ki-duotone ki-scan-barcode fs-1">
-          <span class="path1"></span>
-          <span class="path2"></span>
-          <span class="path3"></span>
-          <span class="path4"></span>
-          <span class="path5"></span>
-          <span class="path6"></span>
-          <span class="path7"></span>
-          <span class="path8"></span>
-          </i>
-        </button>
 
-        <button type="button" class="btn btn-primary btn-sm btn-icon addBtn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="إضافة موظف جديد">
-          <i class="ki-duotone ki-abstract-10 fs-1">
-          <span class="path1"></span>
-          <span class="path2"></span>
-          </i>
-        </button>
+
+   
     </div>
       </th>
     </thead>
@@ -195,10 +214,10 @@ if (!is_array($data)) {
             <input type="text" class="form-control form-control-solid" placeholder="الاسم" value="" id="addName" name="addName" required />
           </div>
           <div class="fv-row mb-5">
-            <input type="text" class="form-control form-control-solid" placeholder="المسمى الوظيفي" value="" id="addPosition" name="addPosition" required />
+            <input type="text" class="form-control form-control-solid" placeholder="القسم" value="" id="addDepartment" name="addDepartment" />
           </div>
           <div class="fv-row mb-5">
-            <input type="text" class="form-control form-control-solid" placeholder="القسم" value="" id="addDepartment" name="addDepartment" />
+            <input type="text" class="form-control form-control-solid" placeholder="المسمى الوظيفي" value="" id="addPosition" name="addPosition" required />
           </div>
           <div class="fv-row mb-5">
             <input type="email" class="form-control form-control-solid" placeholder="البريد الإلكتروني" value="" id="addEmail" name="addEmail" required />
@@ -226,10 +245,10 @@ if (!is_array($data)) {
             <input type="text" class="form-control form-control-solid" placeholder="الاسم" value="" id="editName" name="editName" required />
           </div>
           <div class="fv-row mb-5">
-            <input type="text" class="form-control form-control-solid" placeholder="المسمى الوظيفي" value="" id="editPosition" name="editPosition" required />
+            <input type="text" class="form-control form-control-solid" placeholder="القسم" value="" id="editDepartment" name="editDepartment" />
           </div>
           <div class="fv-row mb-5">
-            <input type="text" class="form-control form-control-solid" placeholder="القسم" value="" id="editDepartment" name="editDepartment" />
+            <input type="text" class="form-control form-control-solid" placeholder="المسمى الوظيفي" value="" id="editPosition" name="editPosition" required />
           </div>
           <div class="fv-row mb-5">
             <input type="email" class="form-control form-control-solid" placeholder="البريد الإلكتروني" value="" id="editEmail" name="editEmail" required />
