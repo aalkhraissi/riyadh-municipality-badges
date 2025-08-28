@@ -89,7 +89,7 @@ function renderTable() {
 			<td class="text-center">${escapeHtml(padZero(item.number, 3))}</td>
 		        <td class="text-center">${escapeHtml(item.name)}</td>
 				<td class="text-center">${escapeHtml(item.position)}</td>
-		        <td class="text-center">${escapeHtml(item.department || "")}</td>
+		        <td class="text-center">${escapeHtml(item.department || "-")}</td>
 		        <td class="text-center">${escapeHtml(item.email)}</td>
 		        <td class="text-center">
 
