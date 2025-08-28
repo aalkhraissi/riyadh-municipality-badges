@@ -92,43 +92,73 @@ function renderTable() {
 		        <td class="text-center">${escapeHtml(item.department || "-")}</td>
 		        <td class="text-center">${escapeHtml(item.email)}</td>
 		        <td class="text-center">
-
-		 <button class="btn btn-icon btn-sm btn-secondary downloadBtn" data-id="${
-				item.id
-			}">
-		 <i class="ki-duotone ki-scan-barcode fs-1">
-		 <span class="path1"></span>
-		 <span class="path2"></span>
-		 <span class="path3"></span>
-		 <span class="path4"></span>
-		 <span class="path5"></span>
-		 <span class="path6"></span>
-		 <span class="path7"></span>
-		 <span class="path8"></span>
-		 </i>
-		 </button>
-		            <button class="btn btn-icon btn-sm btn-light-info previewBtn">
-				<i class="ki-duotone ki-eye fs-1">
-				<span class="path1"></span>
-				<span class="path2"></span>
-				<span class="path3"></span>
-				</i>
-			  </button>
-		            <button class="btn btn-icon btn-sm btn-light-warning editBtn">
-				<i class="ki-duotone ki-notepad-edit fs-1">
-				<span class="path1"></span>
-				<span class="path2"></span>
-				</i>
-			  </button>
-		            <button class="btn btn-icon btn-sm btn-light-danger deleteBtn">
-				<i class="ki-duotone ki-trash fs-1">
-				<span class="path1"></span>
-				<span class="path2"></span>
-				<span class="path3"></span>
-				<span class="path4"></span>
-				<span class="path5"></span>
-				</i>
-			  </button>
+		            <div class="dropdown">
+		                <button class="btn btn-sm btn-light btn-active-light-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+		                    <i class="ki-duotone ki-dots-square fs-1">
+		                        <span class="path1"></span>
+		                        <span class="path2"></span>
+		                        <span class="path3"></span>
+		                        <span class="path4"></span>
+		                    </i>
+		                </button>
+		                <ul class="dropdown-menu">
+		                    <li>
+		                        <a class="dropdown-item downloadBtn" href="#" data-id="${
+															item.id
+														}">
+		                            <i class="ki-duotone ki-scan-barcode fs-2 me-2">
+		                                <span class="path1"></span>
+		                                <span class="path2"></span>
+		                                <span class="path3"></span>
+		                                <span class="path4"></span>
+		                                <span class="path5"></span>
+		                                <span class="path6"></span>
+		                                <span class="path7"></span>
+		                                <span class="path8"></span>
+		                            </i>
+		                            تحميل رمز QR
+		                        </a>
+		                    </li>
+		                    <li>
+		                        <a class="dropdown-item previewBtn" href="#" data-id="${
+															item.id
+														}">
+		                            <i class="ki-duotone ki-eye fs-2 me-2">
+		                                <span class="path1"></span>
+		                                <span class="path2"></span>
+		                                <span class="path3"></span>
+		                            </i>
+		                            معاينة
+		                        </a>
+		                    </li>
+		                    <li>
+		                        <a class="dropdown-item editBtn" href="#" data-id="${
+															item.id
+														}">
+		                            <i class="ki-duotone ki-notepad-edit fs-2 me-2">
+		                                <span class="path1"></span>
+		                                <span class="path2"></span>
+		                            </i>
+		                            تعديل
+		                        </a>
+		                    </li>
+		                    <li><hr class="dropdown-divider"></li>
+		                    <li>
+		                        <a class="dropdown-item text-danger deleteBtn" href="#" data-id="${
+															item.id
+														}">
+		                            <i class="ki-duotone ki-trash fs-2 me-2">
+		                                <span class="path1"></span>
+		                                <span class="path2"></span>
+		                                <span class="path3"></span>
+		                                <span class="path4"></span>
+		                                <span class="path5"></span>
+		                            </i>
+		                            حذف
+		                        </a>
+		                    </li>
+		                </ul>
+		            </div>
 		          </td>
 		        </tr>`,
 			);
