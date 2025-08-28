@@ -93,19 +93,13 @@ function renderTable() {
 		        <td class="text-center">${escapeHtml(item.email)}</td>
 		        <td class="text-center">
 		            <div class="dropdown">
-		                <button class="btn btn-sm btn-light btn-active-light-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-		                    <i class="ki-duotone ki-dots-square fs-1">
-		                        <span class="path1"></span>
-		                        <span class="path2"></span>
-		                        <span class="path3"></span>
-		                        <span class="path4"></span>
-		                    </i>
+		                <button class="btn btn-sm btn-icon btn-light btn-active-light-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+		                 
 		                </button>
-		                <ul class="dropdown-menu">
-		                    <li>
-		                        <a class="dropdown-item downloadBtn" href="#" data-id="${
-															item.id
-														}">
+		                <ul class="dropdown-menu w-150px">
+		                    <li class="text-end w-100">
+		                        <a class="dropdown-item w-100 downloadBtn" href="#" 
+								data-id="${item.id}">
 		                            <i class="ki-duotone ki-scan-barcode fs-2 me-2">
 		                                <span class="path1"></span>
 		                                <span class="path2"></span>
@@ -119,10 +113,9 @@ function renderTable() {
 		                            تحميل رمز QR
 		                        </a>
 		                    </li>
-		                    <li>
-		                        <a class="dropdown-item previewBtn" href="#" data-id="${
-															item.id
-														}">
+		                    <li class="text-end">
+		                        <a class="dropdown-item w-100 previewBtn" href="#"
+								data-id="${item.id}">
 		                            <i class="ki-duotone ki-eye fs-2 me-2">
 		                                <span class="path1"></span>
 		                                <span class="path2"></span>
@@ -131,10 +124,9 @@ function renderTable() {
 		                            معاينة
 		                        </a>
 		                    </li>
-		                    <li>
-		                        <a class="dropdown-item editBtn" href="#" data-id="${
-															item.id
-														}">
+		                    <li class="text-end">
+		                        <a class="dropdown-item w-100 editBtn" href="#" 
+								data-id="${item.id}">
 		                            <i class="ki-duotone ki-notepad-edit fs-2 me-2">
 		                                <span class="path1"></span>
 		                                <span class="path2"></span>
@@ -143,10 +135,9 @@ function renderTable() {
 		                        </a>
 		                    </li>
 		                    <li><hr class="dropdown-divider"></li>
-		                    <li>
-		                        <a class="dropdown-item text-danger deleteBtn" href="#" data-id="${
-															item.id
-														}">
+		                    <li class="text-end">
+		                        <a class="dropdown-item w-100 text-danger deleteBtn" href="#" 
+								data-id="${item.id}">
 		                            <i class="ki-duotone ki-trash fs-2 me-2">
 		                                <span class="path1"></span>
 		                                <span class="path2"></span>
