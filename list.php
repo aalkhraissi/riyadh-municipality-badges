@@ -41,9 +41,30 @@ if (!is_array($data)) {
 
   <style>
     .dropdown-toggle::after {
-    margin-left: 0px !important;
-    border: 0px !important;
-}
+        margin-left: 0px !important;
+        border: 0px !important;
+    }
+
+    .form-floating > label {
+        right: 0 !important;
+        left: auto;
+    }
+
+    .form-floating > .form-control:focus ~ label::after, 
+    .form-floating > .form-control:not(:placeholder-shown) ~ label::after, 
+    .form-floating > .form-control-plaintext ~ label::after, 
+    .form-floating > .form-select ~ label::after {
+          padding: 1rem 0rem !important;
+          background-color: transparent !important;
+    }
+
+    .form-floating > .form-control:focus ~ label, 
+    .form-floating > .form-control:not(:placeholder-shown) ~ label, 
+    .form-floating > .form-control-plaintext ~ label, 
+    .form-floating > .form-select ~ label
+    {
+          transform: scale(0.85) translateY(-0.5rem) translateX(1.50rem) !important;
+    }
     </style>
 </head>
 <body id="kt_body" class="app-blank bg-white">
@@ -57,7 +78,7 @@ if (!is_array($data)) {
 
 
 
-<div class="w-900px">
+<div class="w-1000px">
 
 <!--begin::Header-->
 <div class="d-flex flex-stack align-items-center mb-5" id="header_dev">
@@ -138,16 +159,7 @@ if (!is_array($data)) {
       <th class="text-center fw-bold">القسم</th>
       <th class="text-center fw-bold">المسمى الوظيفي</th>
       <th class="text-center fw-bold">البريد الإلكتروني</th>
-      <th class="w-50px">
-        <div class="d-flex flex-center">
-        
-
-
-
-
-   
-    </div>
-      </th>
+      <th class="w-50px"></th>
     </thead>
     <tbody>
     </tbody>
@@ -208,19 +220,34 @@ if (!is_array($data)) {
       <div class="modal-body">
         <form id="addForm" class="form">
           <div class="fv-row mb-5">
+            <div class="form-floating mb-7">
             <input type="text" class="form-control form-control-solid" placeholder="الرقم" value="" id="addNumber" name="addNumber" readonly />
+                <label for="addNumber">&nbsp;&nbsp;&nbsp;الرقم</label>
+            </div>
           </div>
           <div class="fv-row mb-5">
-            <input type="text" class="form-control form-control-solid" placeholder="الاسم" value="" id="addName" name="addName" required />
+            <div class="form-floating mb-7">
+              <input type="text" class="form-control form-control-solid" placeholder=" " value="" id="addName" name="addName" required />
+                <label for="addName">&nbsp;&nbsp;&nbsp;الاسم</label>
+            </div>
           </div>
           <div class="fv-row mb-5">
-            <input type="text" class="form-control form-control-solid" placeholder="القسم" value="" id="addDepartment" name="addDepartment" />
+            <div class="form-floating mb-7">
+                <input type="text" class="form-control form-control-solid" placeholder=" " value="" id="addDepartment" name="addDepartment" />
+                <label for="addDepartment">&nbsp;&nbsp;&nbsp;القسم</label>
+            </div>
           </div>
           <div class="fv-row mb-5">
-            <input type="text" class="form-control form-control-solid" placeholder="المسمى الوظيفي" value="" id="addPosition" name="addPosition" required />
+            <div class="form-floating mb-7">
+                <input type="text" class="form-control form-control-solid" placeholder=" " value="" id="addPosition" name="addPosition" required />
+                <label for="addPosition">المسمى الوظيفي</label>
+            </div>
           </div>
           <div class="fv-row mb-5">
-            <input type="email" class="form-control form-control-solid" placeholder="البريد الإلكتروني" value="" id="addEmail" name="addEmail" required />
+            <div class="form-floating mb-7">
+                <input type="email" class="form-control form-control-solid" placeholder=" " value="" id="addEmail" name="addEmail" required />
+                <label for="addEmail">البريد الإلكتروني</label>
+            </div>
           </div>
           <div class="text-center pt-5">
             <button class="btn btn-primary w-100px ms-5" type="submit">حفظ</button>
@@ -242,16 +269,28 @@ if (!is_array($data)) {
         <form id="editForm" class="form">
           <input type="hidden" id="editId" />
           <div class="fv-row mb-5">
+            <div class="form-floating mb-7">
             <input type="text" class="form-control form-control-solid" placeholder="الاسم" value="" id="editName" name="editName" required />
+                <label for="addPosition">&nbsp;&nbsp;&nbsp;الاسم</label>
+            </div>
           </div>
           <div class="fv-row mb-5">
+            <div class="form-floating mb-7">
             <input type="text" class="form-control form-control-solid" placeholder="القسم" value="" id="editDepartment" name="editDepartment" />
+                <label for="addPosition">&nbsp;&nbsp;&nbsp;القسم</label>
+            </div>
           </div>
           <div class="fv-row mb-5">
+            <div class="form-floating mb-7">
             <input type="text" class="form-control form-control-solid" placeholder="المسمى الوظيفي" value="" id="editPosition" name="editPosition" required />
+                <label for="addPosition">المسمى الوظيفي</label>
+            </div>
           </div>
           <div class="fv-row mb-5">
+            <div class="form-floating mb-7">
             <input type="email" class="form-control form-control-solid" placeholder="البريد الإلكتروني" value="" id="editEmail" name="editEmail" required />
+                <label for="addPosition">البريد الإلكتروني</label>
+            </div>
           </div>
           <div class="text-center pt-5">
             <button type="submit" class="btn btn-primary w-100px ms-5" id="saveEdit">حفظ</button>
