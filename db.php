@@ -37,9 +37,10 @@ class Database {
 
     public function insert($record) {
         $stmt = $this->pdo->prepare("REPLACE INTO records (id, number, name, email, position, department) VALUES (?, ?, ?, ?, ?, ?)");
-        return $stmt->execute([
+        $stmt->execute([
             $record['id'], $record['number'], $record['name'], $record['email'], $record['position'], $record['department'] ?? ''
         ]);
+        return $stmt->rowCount();
     }
 
     public function delete($id) {
@@ -49,9 +50,10 @@ class Database {
 
     public function update($record) {
         $stmt = $this->pdo->prepare("UPDATE records SET name = ?, email = ?, position = ?, department = ? WHERE id = ?");
-        return $stmt->execute([
+        $stmt->execute([
             $record['name'], $record['email'], $record['position'], $record['department'] ?? '', $record['id']
         ]);
+        return $stmt->rowCount();
     }
 
     public function authenticateUser($username, $password) {
@@ -132,6 +134,25 @@ class Database {
             $stmt = $this->pdo->prepare("SHOW COLUMNS FROM $table LIKE ?");
             $stmt->execute([$column]);
             return $stmt->fetch() !== false;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function checkTableExists($table) {
+        try {
+            $stmt = $this->pdo->prepare("SHOW TABLES LIKE ?");
+            $stmt->execute([$table]);
+            return $stmt->fetch() !== false;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function createTable($query) {
+        try {
+            $this->pdo->exec($query);
+            return true;
         } catch (PDOException $e) {
             return false;
         }

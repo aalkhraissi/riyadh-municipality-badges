@@ -241,14 +241,19 @@ $(document).on("change", "#csvFileInput", function () {
 		processData: false,
 		contentType: false,
 		success: function (response) {
-			alert("Import success!");
-			// Reload data from server to update the table
-			$.get("data.php", function (newData) {
-				data = newData;
-				updateMaxNumber();
-				filterDataKeepPage();
-				renderTable();
-			});
+			var result = JSON.parse(response);
+			if (result.status === "success") {
+				alert(result.message);
+				// Reload data from server to update the table
+				$.get("data.php", function (newData) {
+					data = newData;
+					updateMaxNumber();
+					filterDataKeepPage();
+					renderTable();
+				});
+			} else {
+				alert("Import failed: " + result.message);
+			}
 		},
 		error: function (xhr, status, error) {
 			alert("Error during import: " + error);
