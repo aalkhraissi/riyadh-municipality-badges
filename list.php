@@ -30,7 +30,7 @@ if (!is_array($data)) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Badge control</title>
+  <title>riyadh-municipality control</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, shrink-to-fit=0">
   <link rel="shortcut icon" href="favicon.ico" />
@@ -81,7 +81,7 @@ if (!is_array($data)) {
 <div class="w-1000px">
 
 <!--begin::Header-->
-<div class="d-flex flex-stack align-items-center mb-5" id="header_dev">
+<div class="d-flex flex-stack align-items-center mb-5" id="header_dev" style="height: 76px;">
 
   <div class="">
     <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
@@ -156,8 +156,8 @@ if (!is_array($data)) {
       </th>
       <th class="text-center fw-bold w-50px">#</th>
       <th class="text-center fw-bold">الاسم</th>
+      <th class="text-center fw-bold">الإدارة</th>
       <th class="text-center fw-bold">القسم</th>
-      <th class="text-center fw-bold">المسمى الوظيفي</th>
       <th class="text-center fw-bold">البريد الإلكتروني</th>
       <th class="w-50px"></th>
     </thead>
@@ -233,14 +233,14 @@ if (!is_array($data)) {
           </div>
           <div class="fv-row mb-5">
             <div class="form-floating mb-7">
-                <input type="text" class="form-control form-control-solid" placeholder=" " value="" id="addDepartment" name="addDepartment" />
-                <label for="addDepartment">&nbsp;&nbsp;&nbsp;القسم</label>
+                <input type="text" class="form-control form-control-solid" placeholder=" " value="" id="addAdministration" name="addAdministration" required />
+                <label for="editAdministration">الإدارة</label>
             </div>
           </div>
           <div class="fv-row mb-5">
             <div class="form-floating mb-7">
-                <input type="text" class="form-control form-control-solid" placeholder=" " value="" id="addPosition" name="addPosition" required />
-                <label for="addPosition">المسمى الوظيفي</label>
+                <input type="text" class="form-control form-control-solid" placeholder=" " value="" id="addDepartment" name="addDepartment" />
+                <label for="addDepartment">&nbsp;&nbsp;&nbsp;القسم</label>
             </div>
           </div>
           <div class="fv-row mb-5">
@@ -271,25 +271,25 @@ if (!is_array($data)) {
           <div class="fv-row mb-5">
             <div class="form-floating mb-7">
             <input type="text" class="form-control form-control-solid" placeholder="الاسم" value="" id="editName" name="editName" required />
-                <label for="addPosition">&nbsp;&nbsp;&nbsp;الاسم</label>
+                <label for="editName">&nbsp;&nbsp;&nbsp;الاسم</label>
+            </div>
+          </div>
+          <div class="fv-row mb-5">
+            <div class="form-floating mb-7">
+            <input type="text" class="form-control form-control-solid" placeholder="الإدارة" value="" id="editAdministration" name="editAdministration" required />
+                <label for="editAdministration">الإدارة</label>
             </div>
           </div>
           <div class="fv-row mb-5">
             <div class="form-floating mb-7">
             <input type="text" class="form-control form-control-solid" placeholder="القسم" value="" id="editDepartment" name="editDepartment" />
-                <label for="addPosition">&nbsp;&nbsp;&nbsp;القسم</label>
-            </div>
-          </div>
-          <div class="fv-row mb-5">
-            <div class="form-floating mb-7">
-            <input type="text" class="form-control form-control-solid" placeholder="المسمى الوظيفي" value="" id="editPosition" name="editPosition" required />
-                <label for="addPosition">المسمى الوظيفي</label>
+                <label for="editDepartment">&nbsp;&nbsp;&nbsp;القسم</label>
             </div>
           </div>
           <div class="fv-row mb-5">
             <div class="form-floating mb-7">
             <input type="email" class="form-control form-control-solid" placeholder="البريد الإلكتروني" value="" id="editEmail" name="editEmail" required />
-                <label for="addPosition">البريد الإلكتروني</label>
+                <label for="editEmail">البريد الإلكتروني</label>
             </div>
           </div>
           <div class="text-center pt-5">
@@ -297,6 +297,24 @@ if (!is_array($data)) {
             <button type="reset" class="btn btn-light w-100px" id="cancelEdit">إلغاء</button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Import Progress Modal -->
+<div class="modal fade" id="importProgressModal" style="z-index: 1055;" tabindex="-1" aria-labelledby="importProgressModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body text-center p-4">
+        <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <h5 class="modal-title mb-2" id="importProgressModalLabel">Importing CSV</h5>
+        <p id="importProgressText" class="mb-3">Preparing to import...</p>
+        <div class="progress" style="height: 20px;">
+          <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" id="importProgressBar" style="width: 0%"></div>
+        </div>
       </div>
     </div>
   </div>

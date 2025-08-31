@@ -44,7 +44,8 @@ function filterData() {
 		return (
 			(item.name && item.name.toLowerCase().includes(query)) ||
 			(item.number && item.number.toString().includes(query)) ||
-			(item.department && item.department.toLowerCase().includes(query))
+			(item.department && item.department.toLowerCase().includes(query)) ||
+			(item.administration && item.administration.toLowerCase().includes(query))
 		);
 	});
 	currentPage = 1;
@@ -57,14 +58,18 @@ function filterDataKeepPage() {
 		return (
 			(item.name && item.name.toLowerCase().includes(query)) ||
 			(item.number && item.number.toString().includes(query)) ||
-			(item.department && item.department.toLowerCase().includes(query))
+			(item.department && item.department.toLowerCase().includes(query)) ||
+			(item.administration && item.administration.toLowerCase().includes(query))
 		);
 	});
 	// Keep current page
 }
 // Render table with current page and filter
 function renderTable() {
+	console.log("renderTable called with", filteredData.length, "records");
+	// Clear existing table content
 	$("#dataTable tbody").empty();
+	$("#noDataMessage").remove();
 
 	var startIdx = (currentPage - 1) * rowsPerPage;
 	var endIdx = Math.min(startIdx + rowsPerPage, filteredData.length);
@@ -87,10 +92,10 @@ function renderTable() {
 		          </div>
 			</td>
 			<td class="text-center">${escapeHtml(padZero(item.number, 3))}</td>
-		        <td class="text-center">${escapeHtml(item.name)}</td>
-		       <td class="text-center">${escapeHtml(item.department || "-")}</td>
-		              <td class="text-center">${escapeHtml(item.position)}</td>
-		              <td class="text-center">${escapeHtml(item.email)}</td>
+			       <td class="text-center">${escapeHtml(item.name)}</td>
+			      <td class="text-center">${escapeHtml(item.administration)}</td>
+			             <td class="text-center">${escapeHtml(item.department || "-")}</td>
+			             <td class="text-center">${escapeHtml(item.email)}</td>
 		        <td class="text-center">
 		            <div class="dropdown">
 		                <button class="btn btn-sm btn-icon btn-light btn-active-light-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">

@@ -49,11 +49,11 @@ if (!$record) {
 					<span class="fw-bolder" style="color:#006a46; font-size:30px">
                         <?php echo htmlspecialchars($record['name']); ?>
                     </span>
+					<span class="fw-simibold" style="color:#8ba0d0; font-size:20px">
+					                   <?php echo htmlspecialchars($record['administration']); ?>
+					               </span>
 					<span class="fw-simibold" style="color:#6c757d; font-size:18px">
 					                   <?php echo htmlspecialchars($record['department'] ?? ''); ?>
-					               </span>
-					<span class="fw-simibold" style="color:#8ba0d0; font-size:20px">
-					                   <?php echo htmlspecialchars($record['position']); ?>
 					               </span>
 					<span class="" style="color:#0d6b30; font-size:15px">
 					                   <?php echo htmlspecialchars($record['email']); ?>

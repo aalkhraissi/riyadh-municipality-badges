@@ -16,8 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'number' => intval($_POST['number']),
                 'name' => $_POST['name'],
                 'email' => $_POST['email'],
-                'position' => $_POST['position'],
-                'department' => $_POST['department'] ?? ''
+                'department' => $_POST['department'] ?? '',
+                'administration' => $_POST['administration']
             ];
             $db->insert($record);
             echo json_encode(['status' => 'success', 'entry' => $record]);
@@ -27,8 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'id' => $_POST['id'],
                 'name' => $_POST['name'],
                 'email' => $_POST['email'],
-                'position' => $_POST['position'],
-                'department' => $_POST['department'] ?? ''
+                'department' => $_POST['department'] ?? '',
+                'administration' => $_POST['administration']
             ];
             $db->update($record);
             echo json_encode(['status' => 'success']);
@@ -43,5 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // On GET, just fetch all data for initial load
-echo json_encode($db->getAll());
+$data = $db->getAll();
+error_log("data.php called, returning " . count($data) . " records");
+echo json_encode($data);
 ?>

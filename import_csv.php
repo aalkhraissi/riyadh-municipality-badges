@@ -1,13 +1,56 @@
 <?php
 // import_csv.php - Import CSV to database
 
-header('Content-Type: application/json');
-ini_set('display_errors', 1);
+// Start output buffering to prevent any unwanted output
+ob_start();
+
+// Set error handling to not display errors in output
+ini_set('display_errors', 0);
 error_reporting(E_ALL);
+
+// Custom error handler to return JSON on fatal errors
+function jsonErrorHandler($errno, $errstr, $errfile, $errline) {
+    ob_clean();
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'PHP Error: ' . $errstr,
+        'file' => $errfile,
+        'line' => $errline
+    ]);
+    exit;
+}
+
+// Shutdown function to handle fatal errors
+function jsonShutdownHandler() {
+    $error = error_get_last();
+    if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        ob_clean();
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Fatal PHP Error: ' . $error['message'],
+            'file' => $error['file'],
+            'line' => $error['line']
+        ]);
+    }
+}
+
+set_error_handler('jsonErrorHandler');
+register_shutdown_function('jsonShutdownHandler');
+
+header('Content-Type: application/json');
 mb_internal_encoding('UTF-8');
 
-require_once './config/config.php';
-require_once 'db.php';
+try {
+    require_once './config/config.php';
+    require_once 'db.php';
+} catch (Exception $e) {
+    ob_clean();
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Failed to load required files: ' . $e->getMessage()
+    ]);
+    exit;
+}
 
 // Check upload
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_FILES['csvfile'])) {
@@ -41,8 +84,8 @@ if (!$db->checkTableExists('records')) {
         number INT NOT NULL,
         name VARCHAR(255) NOT NULL,
         email VARCHAR(255),
-        position VARCHAR(255),
-        department VARCHAR(255) DEFAULT ''
+        department VARCHAR(255) DEFAULT '',
+        administration VARCHAR(255)
     )";
     $db->createTable($createTableQuery);
 }
@@ -84,31 +127,18 @@ while (($row = fgetcsv($handle)) !== false) {
         $headers = array_map(function($header) {
             return trim($header, "\xEF\xBB\xBF \t\n\r\0\x0B"); // Remove BOM and whitespace
         }, $row);
-        $messages[] = "Headers found: " . implode(', ', $headers);
         continue;
     }
     $totalRows++;
     $rowData = array_combine($headers, $row);
-    if ($totalRows == 1) {
-        $messages[] = "Available keys: " . implode(', ', array_keys($rowData));
-    }
-    if ($totalRows <= 3) { // Debug first 3 rows
-        $messages[] = "Row $totalRows data: " . json_encode($rowData);
-    }
     $id = $rowData['id'] ?? '';
     $name = $rowData['name'] ?? '';
     $email = $rowData['email'] ?? '';
+    $administration = $rowData['administration'] ?? '';
     $department = $rowData['department'] ?? '';
-    $position = $rowData['position'] ?? '';
-
-    // Debug ID for first few rows
-    if ($totalRows <= 5) {
-        $messages[] = "Row $totalRows ID: '$id' (length: " . strlen($id) . ")";
-    }
 
     // Skip rows without ID
     if (empty($id)) {
-        $messages[] = "Skipped row $totalRows: no ID";
         continue;
     }
 
@@ -121,16 +151,14 @@ while (($row = fgetcsv($handle)) !== false) {
             'id' => $id,
             'name' => $name,
             'email' => $email,
-            'position' => $position,
-            'department' => $department
+            'department' => $department,
+            'administration' => $administration
         ];
-        $messages[] = "Updating existing record ID: $id";
 
         try {
             $affected = $db->update($record);
             if ($affected > 0) {
                 $importedCount++;
-                $messages[] = "Record with ID $id updated.";
             } else {
                 $errors[] = "No rows updated for ID $id.";
             }
@@ -147,16 +175,14 @@ while (($row = fgetcsv($handle)) !== false) {
             'number' => $number,
             'name' => $name,
             'email' => $email,
-            'position' => $position,
-            'department' => $department
+            'department' => $department,
+            'administration' => $administration
         ];
-        $messages[] = "Creating new record ID: $id, Number: $number";
 
         try {
             $affected = $db->insert($record);
             if ($affected > 0) {
                 $importedCount++;
-                $messages[] = "Record with ID $id added. Number: $number";
             } else {
                 $errors[] = "No rows inserted for ID $id.";
             }
@@ -168,11 +194,13 @@ while (($row = fgetcsv($handle)) !== false) {
 fclose($handle);
 
 $status = (count($errors) == 0 && $importedCount > 0) ? 'success' : (count($errors) > 0 ? 'error' : 'no_data');
-$message = "CSV import completed. Total rows processed: $totalRows. Records added/updated: $importedCount.";
+$message = "Import completed successfully! $importedCount records processed.";
 if (count($errors) > 0) {
-    $message .= " Errors: " . implode('; ', $errors);
+    $message .= " Some records had issues.";
 }
 
+// Clean output buffer and send only JSON
+ob_clean();
 echo json_encode([
     'status' => $status,
     'message' => $message,

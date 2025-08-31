@@ -26,8 +26,8 @@ $("#addForm").submit(function (e) {
 	var numberVal = maxNumber + 1;
 	var name = $("#addName").val().trim();
 	var email = $("#addEmail").val().trim();
-	var position = $("#addPosition").val().trim();
 	var department = $("#addDepartment").val().trim();
+	var administration = $("#addPosition").val().trim();
 
 	$.post(
 		"data.php",
@@ -36,8 +36,8 @@ $("#addForm").submit(function (e) {
 			number: numberVal,
 			name: name,
 			email: email,
-			position: position,
 			department: department,
+			administration: administration,
 		},
 		function (response) {
 			if (response.status === "success") {
@@ -61,15 +61,15 @@ $(document).on("click", ".editBtn", function () {
 	var row = $(this).closest("tr");
 	var id = row.data("id");
 	var name = row.find("td").eq(2).text();
-	var department = row.find("td").eq(3).text();
-	var position = row.find("td").eq(4).text();
+	var administration = row.find("td").eq(3).text();
+	var department = row.find("td").eq(4).text();
 	var email = row.find("td").eq(5).text();
 
 	$("#editId").val(id);
 	$("#editName").val(name);
 	$("#editEmail").val(email);
-	$("#editPosition").val(position);
 	$("#editDepartment").val(department);
+	$("#editPosition").val(administration);
 	$("#editModal").show();
 });
 
@@ -79,8 +79,8 @@ $("#editForm").submit(function (e) {
 	var id = $("#editId").val();
 	var name = $("#editName").val().trim();
 	var email = $("#editEmail").val().trim();
-	var position = $("#editPosition").val().trim();
 	var department = $("#editDepartment").val().trim();
+	var administration = $("#editPosition").val().trim();
 
 	$.post(
 		"data.php",
@@ -88,8 +88,8 @@ $("#editForm").submit(function (e) {
 			action: "edit",
 			id: id,
 			name: name,
-			position: position,
 			department: department,
+			administration: administration,
 			email: email,
 		},
 		function (response) {
@@ -98,8 +98,8 @@ $("#editForm").submit(function (e) {
 				$.each(data, function (i, item) {
 					if (item.id === id) {
 						item.name = name;
-						item.position = position;
 						item.department = department;
+						item.administration = administration;
 						item.email = email;
 					}
 				});
@@ -231,8 +231,22 @@ $(document).on("click", "#exportBtn", function () {
 $(document).on("change", "#csvFileInput", function () {
 	if (!this.files || !this.files[0]) return;
 
+	// Show loading modal with initial progress
+	showImportProgress("Importing CSV file...", 25);
+
 	var formData = new FormData();
 	formData.append("csvfile", this.files[0]);
+
+	// Simulate progress updates
+	var progressInterval = setInterval(function () {
+		var currentWidth = parseInt($("#importProgressBar").css("width"));
+		if (currentWidth < 90) {
+			updateImportProgress(
+				"Processing records...",
+				Math.min(currentWidth + 15, 90),
+			);
+		}
+	}, 300);
 
 	$.ajax({
 		url: "import_csv.php",
@@ -241,22 +255,59 @@ $(document).on("change", "#csvFileInput", function () {
 		processData: false,
 		contentType: false,
 		success: function (response) {
-			var result = JSON.parse(response);
-			if (result.status === "success") {
-				alert(result.message);
+			clearInterval(progressInterval);
+			// jQuery automatically parses JSON responses, so response is already an object
+			var result = response;
+			updateImportProgress(result.message, 100);
+
+			if (result.status === "success" || result.status === "no_data") {
+				console.log("Import successful, reloading data...");
 				// Reload data from server to update the table
-				$.get("data.php", function (newData) {
-					data = newData;
-					updateMaxNumber();
-					filterDataKeepPage();
-					renderTable();
+				$.ajax({
+					url: "data.php",
+					type: "GET",
+					dataType: "json",
+					success: function (newData) {
+						console.log("Raw response from data.php:", newData);
+						console.log("Response type:", typeof newData);
+						console.log("Is array:", Array.isArray(newData));
+						// Update global data variable
+						data = Array.isArray(newData) ? newData : [];
+						filteredData = data;
+						currentPage = 1;
+
+						console.log("Data updated, records:", data.length);
+
+						// Update UI
+						updateMaxNumber();
+						setNextNumber();
+						filterDataKeepPage();
+						renderTable();
+
+						console.log("Table rendered, hiding progress");
+						setTimeout(function () {
+							hideImportProgress();
+						}, 1500);
+					},
+					error: function (xhr, status, error) {
+						console.error("Failed to reload data after import:", status, error);
+						console.error("Response text:", xhr.responseText);
+						hideImportProgress();
+					},
 				});
 			} else {
-				alert("Import failed: " + result.message);
+				console.log("Import failed or no data");
+				setTimeout(function () {
+					hideImportProgress();
+				}, 2000);
 			}
 		},
 		error: function (xhr, status, error) {
-			alert("Error during import: " + error);
+			clearInterval(progressInterval);
+			updateImportProgress("Import failed: " + error, 0);
+			setTimeout(function () {
+				hideImportProgress();
+			}, 2000);
 		},
 	});
 });
@@ -268,9 +319,28 @@ $("#searchInput").on("input", function () {
 		return (
 			item.name.toLowerCase().includes(query) ||
 			item.number.toString().includes(query) ||
-			(item.department && item.department.toLowerCase().includes(query))
+			(item.department && item.department.toLowerCase().includes(query)) ||
+			(item.administration && item.administration.toLowerCase().includes(query))
 		);
 	});
 	currentPage = 1;
 	renderTable();
 });
+
+// Import progress functions
+function showImportProgress(message, percentage = 0) {
+	$("#importProgressModal").modal("show");
+	$("#importProgressText").text(message);
+	$("#importProgressBar").css("width", percentage + "%");
+}
+
+function updateImportProgress(message, percentage) {
+	$("#importProgressText").text(message);
+	$("#importProgressBar").css("width", percentage + "%");
+}
+
+function hideImportProgress() {
+	setTimeout(function () {
+		$("#importProgressModal").modal("hide");
+	}, 1000); // Keep visible for 1 second after completion
+}

@@ -36,9 +36,9 @@ class Database {
     }
 
     public function insert($record) {
-        $stmt = $this->pdo->prepare("REPLACE INTO records (id, number, name, email, position, department) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt = $this->pdo->prepare("REPLACE INTO records (id, number, name, email, department, administration) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([
-            $record['id'], $record['number'], $record['name'], $record['email'], $record['position'], $record['department'] ?? ''
+            $record['id'], $record['number'], $record['name'], $record['email'], $record['department'] ?? '', $record['administration']
         ]);
         return $stmt->rowCount();
     }
@@ -49,9 +49,9 @@ class Database {
     }
 
     public function update($record) {
-        $stmt = $this->pdo->prepare("UPDATE records SET name = ?, email = ?, position = ?, department = ? WHERE id = ?");
+        $stmt = $this->pdo->prepare("UPDATE records SET name = ?, email = ?, department = ?, administration = ? WHERE id = ?");
         $stmt->execute([
-            $record['name'], $record['email'], $record['position'], $record['department'] ?? '', $record['id']
+            $record['name'], $record['email'], $record['department'] ?? '', $record['administration'], $record['id']
         ]);
         return $stmt->rowCount();
     }
@@ -124,6 +124,15 @@ class Database {
     public function executeRawQuery($query) {
         try {
             return $this->pdo->exec($query);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function executeSelectQuery($query) {
+        try {
+            $stmt = $this->pdo->query($query);
+            return $stmt;
         } catch (PDOException $e) {
             return false;
         }
