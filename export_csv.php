@@ -18,7 +18,7 @@ $records = $db->getAll();
 
 // Set headers for CSV download
 header('Content-Type: text/csv; charset=UTF-8');
-header('Content-Disadministration: attachment; filename=employees.csv');
+header('Content-Disposition: attachment; filename=employees.csv');
 
 // Create a file pointer connected to the output stream
 $output = fopen('php://output', 'w');
@@ -27,7 +27,7 @@ $output = fopen('php://output', 'w');
 fwrite($output, "\xEF\xBB\xBF");
 
 // Output the column headings
-fputcsv($output, ['id', 'number', 'name', 'email', 'administration', 'department']);
+fputcsv($output, ['id', 'number', 'name', 'general_administration', 'administration', 'department', 'email']);
 
 // Loop through the records and output them
 foreach ($records as $record) {
@@ -36,9 +36,10 @@ foreach ($records as $record) {
         $record['id'],
         $record['number'],
         $record['name'],
-        $record['email'],
+        $record['general_administration'] ?? '',
         $record['administration'],
-        $record['department'] ?? ''
+        $record['department'] ?? '',
+        $record['email']
     ];
     fputcsv($output, $row);
 }

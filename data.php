@@ -15,8 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'id' => bin2hex(random_bytes(8)),
                 'number' => intval($_POST['number']),
                 'name' => $_POST['name'],
-                'email' => $_POST['email'],
+                'email' => strtolower($_POST['email']),
                 'department' => $_POST['department'] ?? '',
+                'general_administration' => $_POST['general_administration'] ?? '',
                 'administration' => $_POST['administration']
             ];
             $db->insert($record);
@@ -26,8 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $record = [
                 'id' => $_POST['id'],
                 'name' => $_POST['name'],
-                'email' => $_POST['email'],
+                'email' => strtolower($_POST['email']),
                 'department' => $_POST['department'] ?? '',
+                'general_administration' => $_POST['general_administration'] ?? '',
                 'administration' => $_POST['administration']
             ];
             $db->update($record);

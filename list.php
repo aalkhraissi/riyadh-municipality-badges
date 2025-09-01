@@ -156,6 +156,7 @@ if (!is_array($data)) {
       </th>
       <th class="text-center fw-bold w-50px">#</th>
       <th class="text-center fw-bold">الاسم</th>
+      <th class="text-center fw-bold">الإدارة العامة</th>
       <th class="text-center fw-bold">الإدارة</th>
       <th class="text-center fw-bold">القسم</th>
       <th class="text-center fw-bold">البريد الإلكتروني</th>
@@ -233,8 +234,14 @@ if (!is_array($data)) {
           </div>
           <div class="fv-row mb-5">
             <div class="form-floating mb-7">
+                <input type="text" class="form-control form-control-solid" placeholder=" " value="" id="addGeneralAdministration" name="addGeneralAdministration" />
+                <label for="addGeneralAdministration">الإدارة العامة</label>
+            </div>
+          </div>
+          <div class="fv-row mb-5">
+            <div class="form-floating mb-7">
                 <input type="text" class="form-control form-control-solid" placeholder=" " value="" id="addAdministration" name="addAdministration" required />
-                <label for="editAdministration">الإدارة</label>
+                <label for="addAdministration">الإدارة</label>
             </div>
           </div>
           <div class="fv-row mb-5">
@@ -272,6 +279,12 @@ if (!is_array($data)) {
             <div class="form-floating mb-7">
             <input type="text" class="form-control form-control-solid" placeholder="الاسم" value="" id="editName" name="editName" required />
                 <label for="editName">&nbsp;&nbsp;&nbsp;الاسم</label>
+            </div>
+          </div>
+          <div class="fv-row mb-5">
+            <div class="form-floating mb-7">
+            <input type="text" class="form-control form-control-solid" placeholder="الإدارة العامة" value="" id="editGeneralAdministration" name="editGeneralAdministration" />
+                <label for="editGeneralAdministration">الإدارة العامة</label>
             </div>
           </div>
           <div class="fv-row mb-5">

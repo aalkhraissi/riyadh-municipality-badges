@@ -25,9 +25,10 @@ $("#addForm").submit(function (e) {
 	e.preventDefault();
 	var numberVal = maxNumber + 1;
 	var name = $("#addName").val().trim();
-	var email = $("#addEmail").val().trim();
+	var email = $("#addEmail").val().trim().toLowerCase();
 	var department = $("#addDepartment").val().trim();
-	var administration = $("#addPosition").val().trim();
+	var administration = $("#addAdministration").val().trim();
+	var generalAdministration = $("#addGeneralAdministration").val().trim();
 
 	$.post(
 		"data.php",
@@ -37,6 +38,7 @@ $("#addForm").submit(function (e) {
 			name: name,
 			email: email,
 			department: department,
+			general_administration: generalAdministration,
 			administration: administration,
 		},
 		function (response) {
@@ -61,15 +63,17 @@ $(document).on("click", ".editBtn", function () {
 	var row = $(this).closest("tr");
 	var id = row.data("id");
 	var name = row.find("td").eq(2).text();
-	var administration = row.find("td").eq(3).text();
-	var department = row.find("td").eq(4).text();
-	var email = row.find("td").eq(5).text();
+	var generalAdministration = row.find("td").eq(3).text();
+	var administration = row.find("td").eq(4).text();
+	var department = row.find("td").eq(5).text();
+	var email = row.find("td").eq(6).text();
 
 	$("#editId").val(id);
 	$("#editName").val(name);
 	$("#editEmail").val(email);
 	$("#editDepartment").val(department);
-	$("#editPosition").val(administration);
+	$("#editGeneralAdministration").val(generalAdministration);
+	$("#editAdministration").val(administration);
 	$("#editModal").show();
 });
 
@@ -78,9 +82,10 @@ $("#editForm").submit(function (e) {
 	e.preventDefault();
 	var id = $("#editId").val();
 	var name = $("#editName").val().trim();
-	var email = $("#editEmail").val().trim();
+	var email = $("#editEmail").val().trim().toLowerCase();
 	var department = $("#editDepartment").val().trim();
-	var administration = $("#editPosition").val().trim();
+	var generalAdministration = $("#editGeneralAdministration").val().trim();
+	var administration = $("#editAdministration").val().trim();
 
 	$.post(
 		"data.php",
@@ -89,6 +94,7 @@ $("#editForm").submit(function (e) {
 			id: id,
 			name: name,
 			department: department,
+			general_administration: generalAdministration,
 			administration: administration,
 			email: email,
 		},
@@ -99,6 +105,7 @@ $("#editForm").submit(function (e) {
 					if (item.id === id) {
 						item.name = name;
 						item.department = department;
+						item.general_administration = generalAdministration;
 						item.administration = administration;
 						item.email = email;
 					}
@@ -261,40 +268,11 @@ $(document).on("change", "#csvFileInput", function () {
 			updateImportProgress(result.message, 100);
 
 			if (result.status === "success" || result.status === "no_data") {
-				console.log("Import successful, reloading data...");
-				// Reload data from server to update the table
-				$.ajax({
-					url: "data.php",
-					type: "GET",
-					dataType: "json",
-					success: function (newData) {
-						console.log("Raw response from data.php:", newData);
-						console.log("Response type:", typeof newData);
-						console.log("Is array:", Array.isArray(newData));
-						// Update global data variable
-						data = Array.isArray(newData) ? newData : [];
-						filteredData = data;
-						currentPage = 1;
-
-						console.log("Data updated, records:", data.length);
-
-						// Update UI
-						updateMaxNumber();
-						setNextNumber();
-						filterDataKeepPage();
-						renderTable();
-
-						console.log("Table rendered, hiding progress");
-						setTimeout(function () {
-							hideImportProgress();
-						}, 1500);
-					},
-					error: function (xhr, status, error) {
-						console.error("Failed to reload data after import:", status, error);
-						console.error("Response text:", xhr.responseText);
-						hideImportProgress();
-					},
-				});
+				console.log("Import successful, reloading page...");
+				// Simply reload the page to ensure all data is refreshed
+				setTimeout(function () {
+					location.reload();
+				}, 1500);
 			} else {
 				console.log("Import failed or no data");
 				setTimeout(function () {
@@ -320,6 +298,8 @@ $("#searchInput").on("input", function () {
 			item.name.toLowerCase().includes(query) ||
 			item.number.toString().includes(query) ||
 			(item.department && item.department.toLowerCase().includes(query)) ||
+			(item.general_administration &&
+				item.general_administration.toLowerCase().includes(query)) ||
 			(item.administration && item.administration.toLowerCase().includes(query))
 		);
 	});

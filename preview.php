@@ -47,8 +47,11 @@ if (!$record) {
             <div class="d-flex flex-column align-items-center p-0 border-0 mb-10">
 				<div class="d-flex flex-column align-items-center w-100">
 					<span class="fw-bolder" style="color:#006a46; font-size:30px">
-                        <?php echo htmlspecialchars($record['name']); ?>
-                    </span>
+					                   <?php echo htmlspecialchars($record['name']); ?>
+					               </span>
+					<span class="fw-simibold" style="color:#8ba0d0; font-size:20px">
+					                   <?php echo htmlspecialchars($record['general_administration'] ?? ''); ?>
+					               </span>
 					<span class="fw-simibold" style="color:#8ba0d0; font-size:20px">
 					                   <?php echo htmlspecialchars($record['administration']); ?>
 					               </span>

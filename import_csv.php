@@ -83,9 +83,10 @@ if (!$db->checkTableExists('records')) {
         id VARCHAR(255) PRIMARY KEY,
         number INT NOT NULL,
         name VARCHAR(255) NOT NULL,
-        email VARCHAR(255),
+        general_administration VARCHAR(255) DEFAULT '',
+        administration VARCHAR(255),
         department VARCHAR(255) DEFAULT '',
-        administration VARCHAR(255)
+        email VARCHAR(255)
     )";
     $db->createTable($createTableQuery);
 }
@@ -95,6 +96,15 @@ if (!$db->checkColumnExists('records', 'department')) {
     $result = $db->executeRawQuery("ALTER TABLE records ADD COLUMN department VARCHAR(255) DEFAULT ''");
     if (!$result) {
         echo json_encode(['status' => 'error', 'message' => 'Failed to add department column to the records table.']);
+        exit;
+    }
+}
+
+// Check if general_administration column exists, if not, add it
+if (!$db->checkColumnExists('records', 'general_administration')) {
+    $result = $db->executeRawQuery("ALTER TABLE records ADD COLUMN general_administration VARCHAR(255) DEFAULT '' AFTER department");
+    if (!$result) {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to add general_administration column to the records table.']);
         exit;
     }
 }
@@ -133,9 +143,10 @@ while (($row = fgetcsv($handle)) !== false) {
     $rowData = array_combine($headers, $row);
     $id = $rowData['id'] ?? '';
     $name = $rowData['name'] ?? '';
-    $email = $rowData['email'] ?? '';
+    $email = strtolower($rowData['email'] ?? '');
     $administration = $rowData['administration'] ?? '';
     $department = $rowData['department'] ?? '';
+    $generalAdministration = $rowData['general_administration'] ?? '';
 
     // Skip rows without ID
     if (empty($id)) {
@@ -150,9 +161,10 @@ while (($row = fgetcsv($handle)) !== false) {
         $record = [
             'id' => $id,
             'name' => $name,
-            'email' => $email,
+            'general_administration' => $generalAdministration,
+            'administration' => $administration,
             'department' => $department,
-            'administration' => $administration
+            'email' => $email
         ];
 
         try {
@@ -174,9 +186,10 @@ while (($row = fgetcsv($handle)) !== false) {
             'id' => $id,
             'number' => $number,
             'name' => $name,
-            'email' => $email,
+            'general_administration' => $generalAdministration,
+            'administration' => $administration,
             'department' => $department,
-            'administration' => $administration
+            'email' => $email
         ];
 
         try {

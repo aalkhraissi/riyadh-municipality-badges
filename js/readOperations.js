@@ -45,6 +45,8 @@ function filterData() {
 			(item.name && item.name.toLowerCase().includes(query)) ||
 			(item.number && item.number.toString().includes(query)) ||
 			(item.department && item.department.toLowerCase().includes(query)) ||
+			(item.general_administration &&
+				item.general_administration.toLowerCase().includes(query)) ||
 			(item.administration && item.administration.toLowerCase().includes(query))
 		);
 	});
@@ -59,6 +61,8 @@ function filterDataKeepPage() {
 			(item.name && item.name.toLowerCase().includes(query)) ||
 			(item.number && item.number.toString().includes(query)) ||
 			(item.department && item.department.toLowerCase().includes(query)) ||
+			(item.general_administration &&
+				item.general_administration.toLowerCase().includes(query)) ||
 			(item.administration && item.administration.toLowerCase().includes(query))
 		);
 	});
@@ -78,8 +82,8 @@ function renderTable() {
 	if (displaySlice.length === 0) {
 		$("#dataTable tbody").html(
 			`<tr id="noDataMessage" class="text-center">
-	               <td colspan="7">لا يوجد معلومات في هذا الجدول</td>
-	           </tr>`,
+		              <td colspan="8">لا يوجد معلومات في هذا الجدول</td>
+		          </tr>`,
 		);
 	} else {
 		$.each(displaySlice, function (i, item) {
@@ -93,6 +97,9 @@ function renderTable() {
 			</td>
 			<td class="text-center">${escapeHtml(padZero(item.number, 3))}</td>
 			       <td class="text-center">${escapeHtml(item.name)}</td>
+			      <td class="text-center">${escapeHtml(
+							item.general_administration || "-",
+						)}</td>
 			      <td class="text-center">${escapeHtml(item.administration)}</td>
 			             <td class="text-center">${escapeHtml(item.department || "-")}</td>
 			             <td class="text-center">${escapeHtml(item.email)}</td>

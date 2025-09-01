@@ -36,9 +36,9 @@ class Database {
     }
 
     public function insert($record) {
-        $stmt = $this->pdo->prepare("REPLACE INTO records (id, number, name, email, department, administration) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt = $this->pdo->prepare("REPLACE INTO records (id, number, name, general_administration, administration, department, email) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
-            $record['id'], $record['number'], $record['name'], $record['email'], $record['department'] ?? '', $record['administration']
+            $record['id'], $record['number'], $record['name'], $record['general_administration'] ?? '', $record['administration'], $record['department'] ?? '', $record['email']
         ]);
         return $stmt->rowCount();
     }
@@ -49,9 +49,9 @@ class Database {
     }
 
     public function update($record) {
-        $stmt = $this->pdo->prepare("UPDATE records SET name = ?, email = ?, department = ?, administration = ? WHERE id = ?");
+        $stmt = $this->pdo->prepare("UPDATE records SET name = ?, general_administration = ?, administration = ?, department = ?, email = ? WHERE id = ?");
         $stmt->execute([
-            $record['name'], $record['email'], $record['department'] ?? '', $record['administration'], $record['id']
+            $record['name'], $record['general_administration'] ?? '', $record['administration'], $record['department'] ?? '', $record['email'], $record['id']
         ]);
         return $stmt->rowCount();
     }
