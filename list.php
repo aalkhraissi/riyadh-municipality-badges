@@ -155,11 +155,11 @@ if (!is_array($data)) {
         </div>
       </th>
       <th class="text-center fw-bold w-50px">#</th>
-      <th class="text-center fw-bold">الاسم</th>
-      <th class="text-center fw-bold">الإدارة العامة</th>
-      <th class="text-center fw-bold">الإدارة</th>
-      <th class="text-center fw-bold">القسم</th>
-      <th class="text-center fw-bold">البريد الإلكتروني</th>
+      <th class="text-center fw-bold" style="width: 200px; min-width: 200px;">الاسم</th>
+      <th class="text-center fw-bold" style="width: 150px; min-width: 150px;">الإدارة العامة</th>
+      <th class="text-center fw-bold" style="width: 150px; min-width: 150px;">الإدارة</th>
+      <th class="text-center fw-bold" style="width: 120px; min-width: 120px;">القسم</th>
+      <th class="text-center fw-bold" style="width: 200px; min-width: 200px;">البريد الإلكتروني</th>
       <th class="w-50px"></th>
     </thead>
     <tbody>
