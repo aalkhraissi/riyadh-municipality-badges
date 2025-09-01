@@ -14,12 +14,12 @@ try {
         if ($result !== false) {
             echo "General Administration column added successfully to the records table.<br>";
 
-            // Fill existing records with default value "-"
-            $updateResult = $db->executeRawQuery("UPDATE records SET general_administration = '-' WHERE general_administration IS NULL OR general_administration = ''");
+            // Fill existing records with empty value
+            $updateResult = $db->executeRawQuery("UPDATE records SET general_administration = '' WHERE general_administration IS NULL");
             if ($updateResult !== false) {
-                echo "Existing records updated with default general administration value '-'.";
+                echo "Existing records updated with empty general administration value.";
             } else {
-                echo "Warning: Could not update existing records with default general administration value.";
+                echo "Warning: Could not update existing records with empty general administration value.";
             }
         } else {
             echo "Failed to add general administration column to the records table.";
@@ -28,9 +28,9 @@ try {
         echo "General Administration column already exists in the records table.<br>";
 
         // Check if there are any records with empty general_administration values and fill them
-        $updateResult = $db->executeRawQuery("UPDATE records SET general_administration = '-' WHERE general_administration IS NULL OR general_administration = ''");
+        $updateResult = $db->executeRawQuery("UPDATE records SET general_administration = '' WHERE general_administration IS NULL");
         if ($updateResult !== false) {
-            echo "Existing records with empty general administration values updated to '-'.";
+            echo "Existing records with empty general administration values updated to empty.";
         } else {
             echo "No records needed updating or update failed.";
         }

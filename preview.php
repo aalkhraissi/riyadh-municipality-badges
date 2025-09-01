@@ -28,7 +28,7 @@ if (!$record) {
 <!--begin::Head-->
 
 <head>
-  <title>Badge</title>
+  <title>riyadh municipality</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, shrink-to-fit=0">
   <link rel="shortcut icon" href="favicon.ico" />
@@ -49,18 +49,26 @@ if (!$record) {
 					<span class="fw-bolder" style="color:#006a46; font-size:30px">
 					                   <?php echo htmlspecialchars($record['name']); ?>
 					               </span>
+					<?php if (!empty($record['general_administration'])): ?>
 					<span class="fw-simibold" style="color:#8ba0d0; font-size:20px">
-					                   <?php echo htmlspecialchars($record['general_administration'] ?? ''); ?>
+					                   <?php echo htmlspecialchars($record['general_administration']); ?>
 					               </span>
+					<?php endif; ?>
+					<?php if (!empty($record['administration'])): ?>
 					<span class="fw-simibold" style="color:#8ba0d0; font-size:20px">
 					                   <?php echo htmlspecialchars($record['administration']); ?>
 					               </span>
+					<?php endif; ?>
+					<?php if (!empty($record['department'])): ?>
 					<span class="fw-simibold" style="color:#6c757d; font-size:18px">
-					                   <?php echo htmlspecialchars($record['department'] ?? ''); ?>
+					                   <?php echo htmlspecialchars($record['department']); ?>
 					               </span>
+					<?php endif; ?>
+					<?php if (!empty($record['email'])): ?>
 					<span class="" style="color:#0d6b30; font-size:15px">
 					                   <?php echo htmlspecialchars($record['email']); ?>
 					               </span>
+					<?php endif; ?>
 				</div>
 			</div>
           </div>

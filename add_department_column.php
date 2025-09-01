@@ -14,12 +14,12 @@ try {
         if ($result !== false) {
             echo "Department column added successfully to the records table.<br>";
 
-            // Fill existing records with default value "-"
-            $updateResult = $db->executeRawQuery("UPDATE records SET department = '-' WHERE department IS NULL OR department = ''");
+            // Fill existing records with empty value
+            $updateResult = $db->executeRawQuery("UPDATE records SET department = '' WHERE department IS NULL");
             if ($updateResult !== false) {
-                echo "Existing records updated with default department value '-'.";
+                echo "Existing records updated with empty department value.";
             } else {
-                echo "Warning: Could not update existing records with default department value.";
+                echo "Warning: Could not update existing records with empty department value.";
             }
         } else {
             echo "Failed to add department column to the records table.";
@@ -28,9 +28,9 @@ try {
         echo "Department column already exists in the records table.<br>";
 
         // Check if there are any records with empty department values and fill them
-        $updateResult = $db->executeRawQuery("UPDATE records SET department = '-' WHERE department IS NULL OR department = ''");
+        $updateResult = $db->executeRawQuery("UPDATE records SET department = '' WHERE department IS NULL");
         if ($updateResult !== false) {
-            echo "Existing records with empty department values updated to '-'.";
+            echo "Existing records with empty department values updated to empty.";
         } else {
             echo "No records needed updating or update failed.";
         }
