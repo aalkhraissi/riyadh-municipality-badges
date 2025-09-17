@@ -1,0 +1,23 @@
+@font-face {
+    font-family: "SF-Arabic";
+    src: url("SF-Arabic.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+
+html,
+body {
+    font-family: "SF-Arabic", var(--bs-font-sans-serif) !important;
+}
+
+.dropdown-toggle::after {
+    display: none !important;
+}
+.select2-container--bootstrap5 .select2-dropdown .select2-results__option.select2-results__option--selected:after {
+    left: 1.25rem !important;
+    right: unset !important;
+}
+
+.btn>i {
+    padding-left: 0px !important;
+}

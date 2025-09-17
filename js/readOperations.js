@@ -6,6 +6,7 @@ var data = Array.isArray(initialData) ? initialData : [];
 var filteredData = data;
 var currentPage = 1;
 var rowsPerPage = 10;
+var selectedBranch = "";
 
 var maxNumber = 0;
 
@@ -27,9 +28,27 @@ function padZero(num, length) {
 	return num.toString().padStart(length, "0");
 }
 
-// Set the next number in the add form input
+// Set the next number in the add form input based on selected branch
 function setNextNumber() {
-	$("#addNumber").val(padZero(maxNumber + 1, 3));
+	var branchId = $("#branchFilter").val();
+	if (branchId) {
+		// Get max number for selected branch via AJAX
+		$.get(
+			"data.php",
+			{
+				action: "get_max_number",
+				branch_id: branchId,
+			},
+			function (response) {
+				var nextNumber = (response.max_number || 0) + 1;
+				$("#addNumber").val(padZero(nextNumber, 3));
+			},
+			"json",
+		);
+	} else {
+		// Fallback to global max number
+		$("#addNumber").val(padZero(maxNumber + 1, 3));
+	}
 }
 
 // Utility function to escape HTML
@@ -37,40 +56,88 @@ function escapeHtml(text) {
 	return $("<div>").text(text).html();
 }
 
-// Filter data based on search input
+// Filter data based on search input and branch
 function filterData() {
 	var query = $("#searchInput").val().toLowerCase();
+	selectedBranch = $("#branchFilter").val();
+
+	console.log("Filtering data - Query:", query, "Branch:", selectedBranch);
+	console.log("Total data records:", data.length);
+
 	filteredData = data.filter(function (item) {
-		return (
+		var matchesSearch =
 			(item.name && item.name.toLowerCase().includes(query)) ||
 			(item.number && item.number.toString().includes(query)) ||
 			(item.department && item.department.toLowerCase().includes(query)) ||
 			(item.general_administration &&
 				item.general_administration.toLowerCase().includes(query)) ||
-			(item.administration && item.administration.toLowerCase().includes(query))
-		);
+			(item.administration &&
+				item.administration.toLowerCase().includes(query));
+
+		// Branch filtering logic
+		var matchesBranch = true; // Default to true (show all)
+		if (selectedBranch && selectedBranch !== "") {
+			// If a specific branch is selected, filter by that branch
+			matchesBranch = item.branch_id == selectedBranch;
+			console.log(
+				"Checking branch match - Item branch_id:",
+				item.branch_id,
+				"Selected branch:",
+				selectedBranch,
+				"Matches:",
+				matchesBranch,
+			);
+		}
+		// If selectedBranch is empty, show all records (matchesBranch remains true)
+
+		var finalMatch = matchesSearch && matchesBranch;
+		if (finalMatch) {
+			console.log("Record matches:", item.name, "Branch:", item.branch_id);
+		}
+
+		return finalMatch;
 	});
+
+	console.log("Filtered data count:", filteredData.length);
 	currentPage = 1;
 }
 
 // Filter data without resetting page
 function filterDataKeepPage() {
 	var query = $("#searchInput").val().toLowerCase();
+	selectedBranch = $("#branchFilter").val();
 	filteredData = data.filter(function (item) {
-		return (
+		var matchesSearch =
 			(item.name && item.name.toLowerCase().includes(query)) ||
 			(item.number && item.number.toString().includes(query)) ||
 			(item.department && item.department.toLowerCase().includes(query)) ||
 			(item.general_administration &&
 				item.general_administration.toLowerCase().includes(query)) ||
-			(item.administration && item.administration.toLowerCase().includes(query))
-		);
+			(item.administration &&
+				item.administration.toLowerCase().includes(query));
+
+		// Branch filtering logic
+		var matchesBranch = true; // Default to true (show all)
+		if (selectedBranch && selectedBranch !== "") {
+			// If a specific branch is selected, filter by that branch
+			matchesBranch = item.branch_id == selectedBranch;
+		}
+		// If selectedBranch is empty, show all records (matchesBranch remains true)
+
+		return matchesSearch && matchesBranch;
 	});
 	// Keep current page
 }
 // Render table with current page and filter
 function renderTable() {
-	console.log("renderTable called with", filteredData.length, "records");
+	console.log(
+		"Rendering table - Current page:",
+		currentPage,
+		"Rows per page:",
+		rowsPerPage,
+		"Filtered data:",
+		filteredData.length,
+	);
 	// Clear existing table content
 	$("#dataTable tbody").empty();
 	$("#noDataMessage").remove();
@@ -89,24 +156,28 @@ function renderTable() {
 		$.each(displaySlice, function (i, item) {
 			$("#dataTable tbody").append(
 				`<tr data-id="${item.id}">
-			<td class="text-center">
+			<td class="text-center" style="vertical-align: middle;">
 			<div class="form-check form-check-sm form-check-custom form-check-solid d-inline-block">
 		          	<input class="form-check-input checkbox" type="checkbox"
 				data-id="${item.id}" />
 		          </div>
 			</td>
-			<td class="text-center">${escapeHtml(padZero(item.number, 3))}</td>
-			       <td class="text-center">${escapeHtml(item.name)}</td>
-			      <td class="text-center">${escapeHtml(
-							item.general_administration || "",
-						)}</td>
-			      <td class="text-center">${escapeHtml(item.administration)}</td>
-			             <td class="text-center">${escapeHtml(item.department || "")}</td>
-			             <td class="text-center">${escapeHtml(item.email)}</td>
+			<td class="text-center" style="vertical-align: middle;">
+			${escapeHtml(padZero(item.number, 3))}</td>
+			       <td class="text-center" style="vertical-align: middle;">
+				   ${escapeHtml(item.name)}</td>
+			      <td class="text-center" style="vertical-align: middle;">
+				  ${escapeHtml(item.general_administration || "")}</td>
+			      <td class="text-center" style="vertical-align: middle;">
+				  ${escapeHtml(item.administration)}</td>
+			             <td class="text-center" style="vertical-align: middle;">
+						 ${escapeHtml(item.department || "")}</td>
+			             <td class="text-center" style="vertical-align: middle;">
+						 ${escapeHtml(item.email)}</td>
 		        <td class="text-center">
 		            <div class="dropdown">
 		                <button class="btn btn-sm btn-icon btn-light btn-active-light-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-		                 <i class="ki-duotone ki-category fs-1">
+		                 <i class="ki-duotone ki-category text-primary fs-1">
 							<span class="path1"></span>
 							<span class="path2"></span>
 							<span class="path3"></span>
@@ -114,10 +185,10 @@ function renderTable() {
 						</i>
 		                </button>
 		                <ul class="dropdown-menu w-150px">
-		                    <li class="text-end w-100">
-		                        <a class="dropdown-item w-100 downloadBtn" href="#" 
+		                    <li class="text-start w-100">
+		                        <a class="dropdown-item d-flex align-items-center w-100 downloadBtn" href="#" 
 								data-id="${item.id}">
-		                            <i class="ki-duotone ki-scan-barcode fs-2 ms-5">
+		                            <i class="ki-duotone ki-scan-barcode fs-2 me-5">
 		                                <span class="path1"></span>
 		                                <span class="path2"></span>
 		                                <span class="path3"></span>
@@ -130,10 +201,10 @@ function renderTable() {
 		                            تحميل رمز QR
 		                        </a>
 		                    </li>
-		                    <li class="text-end">
-		                        <a class="dropdown-item w-100 previewBtn" href="#"
+		                    <li class="text-start">
+		                        <a class="dropdown-item w-100 d-flex align-items-center previewBtn" href="#"
 								data-id="${item.id}">
-		                            <i class="ki-duotone ki-eye fs-2 ms-5">
+		                            <i class="ki-duotone ki-eye fs-2 text-info me-5">
 		                                <span class="path1"></span>
 		                                <span class="path2"></span>
 		                                <span class="path3"></span>
@@ -141,10 +212,10 @@ function renderTable() {
 		                            معاينة
 		                        </a>
 		                    </li>
-		                    <li class="text-end">
-		                        <a class="dropdown-item w-100 editBtn" href="#" 
+		                    <li class="text-start">
+		                        <a class="dropdown-item w-100 d-flex align-items-center editBtn" href="#" 
 								data-id="${item.id}">
-		                            <i class="ki-duotone ki-notepad-edit fs-2 ms-5">
+		                            <i class="ki-duotone ki-notepad-edit text-warning fs-2 me-5">
 		                                <span class="path1"></span>
 		                                <span class="path2"></span>
 		                            </i>
@@ -152,10 +223,10 @@ function renderTable() {
 		                        </a>
 		                    </li>
 		                    <li><hr class="dropdown-divider"></li>
-		                    <li class="text-end">
-		                        <a class="dropdown-item w-100 text-danger deleteBtn" href="#" 
+		                    <li class="text-start">
+		                        <a class="dropdown-item d-flex align-items-center w-100 text-danger deleteBtn" href="#" 
 								data-id="${item.id}">
-		                            <i class="ki-duotone ki-trash fs-2 ms-5">
+		                            <i class="ki-duotone ki-trash text-danger fs-2 me-5">
 		                                <span class="path1"></span>
 		                                <span class="path2"></span>
 		                                <span class="path3"></span>
@@ -305,19 +376,28 @@ $("#lastPage").click(function () {
 });
 
 // Handle rows per page change
-$("#rowsPerPage").change(function () {
+$(document).on("change", "#rowsPerPage", function () {
+	console.log("Rows per page changed to:", $(this).val());
 	var newRowsPerPage = $(this).val();
+
+	// Update select2 display
+	$("#rowsPerPage").trigger("change.select2");
+
 	if (newRowsPerPage === "all") {
 		// Show all records
 		rowsPerPage = filteredData.length;
 		currentPage = 1;
+		console.log("Setting rows per page to ALL:", rowsPerPage);
 		renderTable();
 	} else {
 		var rows = parseInt(newRowsPerPage);
 		if (!isNaN(rows) && rows > 0) {
 			rowsPerPage = rows;
 			currentPage = 1;
+			console.log("Setting rows per page to:", rowsPerPage);
 			renderTable();
+		} else {
+			console.log("Invalid rows per page value:", newRowsPerPage);
 		}
 	}
 });

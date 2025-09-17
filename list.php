@@ -15,7 +15,15 @@ require_once 'db.php';
 
 try {
     $db = new Database($db_host, $db_name, $db_usr, $db_password);
-    $data = $db->getAll();
+    $db->addBranchIdColumnToRecordsTable(); // Ensure branch_id column exists
+
+    // Get user permissions
+    $userBranchAccessType = isset($_SESSION['branch_access_type']) ? $_SESSION['branch_access_type'] : 'all_branches';
+    $userAssignedBranches = isset($_SESSION['assigned_branches']) ? json_decode($_SESSION['assigned_branches'], true) : null;
+
+    // Load data filtered by user permissions
+    $data = $db->getAllFiltered($userBranchAccessType, $userAssignedBranches);
+    $branches = $db->getBranches();
 } catch (Exception $e) {
     die("Database connection failed: " . $e->getMessage());
 }
@@ -27,128 +35,37 @@ if (!is_array($data)) {
 ?>
 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>riyadh-municipality control</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, shrink-to-fit=0">
-  <link rel="shortcut icon" href="favicon.ico" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
-  <link href="css/plugins.bundle.css" rel="stylesheet" type="text/css" />
-  <link href="css/style.bundle.css" rel="stylesheet" type="text/css" />
+<?php
+// Start output buffering to capture content
+ob_start();
+?>
 
 
-  <style>
-    .dropdown-toggle::after {
-        margin-left: 0px !important;
-        border: 0px !important;
-    }
-
-    .form-floating > label {
-        right: 0 !important;
-        left: auto;
-    }
-
-    .form-floating > .form-control:focus ~ label::after, 
-    .form-floating > .form-control:not(:placeholder-shown) ~ label::after, 
-    .form-floating > .form-control-plaintext ~ label::after, 
-    .form-floating > .form-select ~ label::after {
-          padding: 1rem 0rem !important;
-          background-color: transparent !important;
-    }
-
-    .form-floating > .form-control:focus ~ label, 
-    .form-floating > .form-control:not(:placeholder-shown) ~ label, 
-    .form-floating > .form-control-plaintext ~ label, 
-    .form-floating > .form-select ~ label
-    {
-          transform: scale(0.85) translateY(-0.5rem) translateX(1.50rem) !important;
-    }
-    </style>
-</head>
-<body id="kt_body" class="app-blank bg-white">
-<div class="d-flex flex-column flex-root" id="kt_app_root">
-<div class="d-flex flex-column flex-lg-row flex-column-fluid">
-<div class="d-flex flex-row-fluid">
-<div class="d-flex flex-column flex-center p-10 w-100 h-100">
-<div class="d-flex flex-column flex-column-fluid flex-center w-100 p-0 mx-auto h-100">
-<div class="d-flex justify-content-between flex-column-fluid flex-column flex-center w-100">
+<div class="card card-flush shadow-sm">
+    <div class="card-body">
 
 
-
-
-<div class="w-1000px">
-
-<!--begin::Header-->
-<div class="d-flex flex-stack align-items-center mb-5" id="header_dev" style="height: 76px;">
-
-  <div class="">
-    <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
-    <a href="logout.php" class="btn btn-danger">تسجيل الخروج</a>
-    <?php endif; ?>
-  </div>
-  <div class=""></div>
-  <div class="fs-1" style="direction: rtl;">
-    أهلاً بك، <?php echo isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'User'; ?>
-  </div>
-</div>
-<div class="separator separator-dashed my-10"></div>
-<!--end::Header-->
-
-
-
-<div class="d-flex flex-stack w-100 mb-5" style="direction: rtl;">
+       <div class="d-flex flex-stack w-100 mb-5" style="direction: rtl;">
   <div class="fv-row ms-auto w-100">
     <input type="text" id="searchInput" placeholder="البحث بالاسم او بالرقم" style="direction: rtl" class="form-control form-control-solid w-100">
   </div>
-  <div class="me-5">
-     <form id="importForm" enctype="multipart/form-data">
-          <label class="btn btn-icon btn-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title="رفع الملف">
-            <i class="ki-duotone ki-cloud-add fs-1">
-            <span class="path1"></span>
-            <span class="path2"></span>
-            </i>
-            <input type="file" id="csvFileInput" name="csvfile" accept=".csv" style="display:none;" />
-          </label>
-        </form>
+  <div class="fv-row ms-5 w-300px">
+    <select id="branchFilter" data-control="select2" data-allow-clear="false" data-hide-search="true" class="form-select form-select-solid" style="min-width: 300px;">
+      <option value="">جميع الفروع</option>
+      <?php foreach ($branches as $branch): ?>
+        <option value="<?php echo $branch['id']; ?>"><?php echo htmlspecialchars($branch['name']); ?></option>
+      <?php endforeach; ?>
+    </select>
   </div>
-  <div class="me-1">
-        <button type="button" class="btn btn-success btn-icon mx-5" id="exportBtn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="تحميل الملف">
-          <i class="ki-duotone ki-cloud-download fs-1">
-          <span class="path1"></span>
-          <span class="path2"></span>
-          </i>
-        </button>
-  </div>
-  <div class="me-1">
-    <button type="button" class="btn btn-secondary btn-icon ms-5" id="downloadSelectedBtn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="تحميل رموز QR المحددة" disabled>
-      <i class="ki-duotone ki-scan-barcode fs-1">
-      <span class="path1"></span>
-      <span class="path2"></span>
-      <span class="path3"></span>
-      <span class="path4"></span>
-      <span class="path5"></span>
-      <span class="path6"></span>
-      <span class="path7"></span>
-      <span class="path8"></span>
-      </i>
-    </button>
-  </div>
-  <div class="me-1">
-         <button type="button" class="btn btn-primary btn-icon addBtn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="إضافة موظف جديد">
-          <i class="ki-duotone ki-abstract-10 fs-1">
-          <span class="path1"></span>
-          <span class="path2"></span>
-          </i>
-        </button>
-  </div>
+
 </div>
 
 <!-- begin::DataTable -->
 <div class="table-responsive">
-  <table id="dataTable" class="table table-bordered w-100" style="direction: rtl;">
+  <table id="dataTable" class="table table-rounded table-row-dashed table-row-gray-300 gy-4 gs-4" style="direction: rtl;">
     <thead>
+                  <tr class="fw-semibold fs-6 text-gray-800 border-bottom border-gray-200">
+
       <th class="text-center fw-bold w-50px">
         <div class="form-check form-check-sm form-check-custom form-check-solid d-inline-block">
           <input class="form-check-input" type="checkbox" id="selectAll" />
@@ -161,6 +78,7 @@ if (!is_array($data)) {
       <th class="text-center fw-bold" style="width: 120px; min-width: 120px;">القسم</th>
       <th class="text-center fw-bold" style="width: 200px; min-width: 200px;">البريد الإلكتروني</th>
       <th class="w-50px"></th>
+      </tr>
     </thead>
     <tbody>
     </tbody>
@@ -171,7 +89,7 @@ if (!is_array($data)) {
 <!-- Pagination controls -->
 <div class="d-flex justify-content-between align-items-center">
   <div class="d-flex align-items-center">
-    <select id="rowsPerPage" class="form-select form-select-solid form-select-sm w-auto">
+    <select id="rowsPerPage" data-control="select2" data-allow-clear="false" data-hide-search="true" class="form-select form-select-solid form-select-sm w-auto">
       <option value="5">5</option>
       <option value="10" selected>10</option>
       <option value="25">25</option>
@@ -185,7 +103,7 @@ if (!is_array($data)) {
     <ul class="pagination align-items-center mb-0" id="paginationContainer">
       <li class="page-item first disabled mx-0" id="firstPage">
         <a href="#" class="page-link">
-          <i class="ki-duotone ki-double-left fs-1">
+          <i class="ki-duotone ki-double-right fs-1">
           <span class="path1"></span>
           <span class="path2"></span>
           </i>
@@ -193,18 +111,18 @@ if (!is_array($data)) {
       </li>
       <li class="page-item previous disabled mx-0" id="prevPage">
         <a href="#" class="page-link">
-           <i class="ki-duotone ki-left fs-1"></i>
+           <i class="ki-duotone ki-right fs-1"></i>
         </a>
       </li>
       <!-- Page numbers will be inserted here by JavaScript -->
       <li class="page-item next disabled mx-0" id="nextPage">
         <a href="#" class="page-link">
-          <i class="ki-duotone ki-right fs-1"></i>
+          <i class="ki-duotone ki-left fs-1"></i>
         </a>
       </li>
       <li class="page-item last disabled mx-0" id="lastPage">
         <a href="#" class="page-link ">
-           <i class="ki-duotone ki-double-right fs-1">
+           <i class="ki-duotone ki-double-left fs-1">
           <span class="path1"></span>
           <span class="path2"></span>
           </i>
@@ -213,6 +131,12 @@ if (!is_array($data)) {
     </ul>
   </div>
 </div>
+
+
+    </div>
+</div>
+
+
 
 <!-- Add modal -->
 <div class="modal" id="addModal" style="display:none; z-index:1000; direction:rtl;">
@@ -335,10 +259,11 @@ if (!is_array($data)) {
 
 </div>
 
-
+</div>
 
 <script>
 var initialData = <?php echo json_encode($data); ?>;
+var initialBranches = <?php echo json_encode($branches); ?>;
 </script>
 <script src="js/jquery.js"></script>
 
@@ -348,38 +273,66 @@ var initialData = <?php echo json_encode($data); ?>;
 <script>
   $(document).ready(function() {
     initialize();
+
+    // Initialize branch filter change handler
+    $('#branchFilter').on('change', function() {
+      var selectedBranch = $(this).val();
+      // Save selected branch to localStorage
+      localStorage.setItem('selectedBranch', selectedBranch);
+      // Handle branch filter change
+      filterData();
+      renderTable();
+      // Update the next number for the selected branch
+      setNextNumber();
+    });
+
+    // Restore selected branch from localStorage on page load
+    setTimeout(function() {
+      var savedBranch = localStorage.getItem('selectedBranch');
+      console.log('Checking for saved branch selection:', savedBranch);
+      if (savedBranch) {
+        console.log('Restoring branch selection:', savedBranch);
+        $('#branchFilter').val(savedBranch).trigger('change.select2');
+        console.log('Branch filter value after restoration:', $('#branchFilter').val());
+        // Re-apply filtering after restoration
+        filterData();
+        renderTable();
+      } else {
+        console.log('No saved branch selection found');
+      }
+
+      // Ensure rows per page event handler is attached
+      console.log('Ensuring rows per page event handler is attached');
+      $('#rowsPerPage').off('change').on('change', function() {
+        console.log('Rows per page changed (fallback handler):', $(this).val());
+        var newRowsPerPage = $(this).val();
+
+        // Update select2 display
+        $('#rowsPerPage').trigger('change.select2');
+
+        if (newRowsPerPage === "all") {
+          rowsPerPage = filteredData.length;
+          currentPage = 1;
+          renderTable();
+        } else {
+          var rows = parseInt(newRowsPerPage);
+          if (!isNaN(rows) && rows > 0) {
+            rowsPerPage = rows;
+            currentPage = 1;
+            renderTable();
+          }
+        }
+      });
+    }, 200);
   });
 </script>
 
-<div class="d-flex flex-column w-900px">
-    <div class="separator separator-dashed my-10"></div>
-    <div class="d-flex flex-stack">
-        <div class="d-flex text-dark">
-        Developed by &nbsp;<a href="mailto:aba@aba.sa">ABA</a>
-        </div>
-        <ul class="menu menu-gray-600 menu-hover-primary fw-semibold order-1">
-        <li class="menu-item"></li>
-        </ul>
-    </div>
-</div>
 
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-
-
-  <script src="js/plugins.bundle.js"></script>
-  <script src="js/scripts.bundle.js"></script>
-</body>
-</html>
-
-
-
-
-
-
-
+<?php
+// Capture the content and include header/footer
+$page_content = ob_get_clean();
+$page_title = 'قائمة الموظفين';
+include 'layout/header.php';
+echo $page_content;
+include 'layout/footer.php';
+?>

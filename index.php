@@ -14,7 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         $user = $db->getUserByName($username_input);
         $_SESSION['logged_in'] = true;
         $_SESSION['user_name'] = $user['name']; // Store user's name in session
-        header('Location: list.php');
+        $_SESSION['user_id'] = $user['id']; // Store user ID
+        $_SESSION['is_admin'] = $user['is_admin']; // Store admin status
+        $_SESSION['branch_access_type'] = $user['branch_access_type']; // Store branch access type
+        $_SESSION['assigned_branches'] = $user['assigned_branches']; // Store assigned branches
+        header('Location: dashboard.php');
         exit;
     } else {
         $error = "معلومات المستخدم غير صحيحة";

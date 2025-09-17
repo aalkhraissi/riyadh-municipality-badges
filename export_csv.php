@@ -13,12 +13,38 @@ try {
     die("Database connection failed: " . $e->getMessage());
 }
 
-// Get all records
-$records = $db->getAll();
+// Get branch_id from query parameter
+$branchId = isset($_GET['branch_id']) ? $_GET['branch_id'] : null;
+
+// Get branch name if branch_id is specified
+$branchName = '';
+if ($branchId) {
+    $branch = $db->getBranchById($branchId);
+    if ($branch) {
+        $branchName = $branch['name'];
+    }
+}
+
+// Get records filtered by branch if specified
+if ($branchId) {
+    $allRecords = $db->getAll();
+    $records = array_filter($allRecords, function($record) use ($branchId) {
+        return $record['branch_id'] == $branchId;
+    });
+} else {
+    $records = $db->getAll();
+}
+
+// Create filename with branch name if available
+$filename = 'employees';
+if (!empty($branchName)) {
+    $filename .= '_' . preg_replace('/[^a-zA-Z0-9_]/', '_', $branchName);
+}
+$filename .= '.csv';
 
 // Set headers for CSV download
 header('Content-Type: text/csv; charset=UTF-8');
-header('Content-Disposition: attachment; filename=employees.csv');
+header('Content-Disposition: attachment; filename=' . $filename);
 
 // Create a file pointer connected to the output stream
 $output = fopen('php://output', 'w');

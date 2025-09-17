@@ -11,14 +11,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     switch ($action) {
         case 'add':
+            $branchId = $_POST['branch_id'] ?? null;
+            $number = intval($_POST['number']);
+
+            // If no number provided or branch-specific numbering, get next number for branch
+            if ($number === 0 || $branchId) {
+                $maxNumber = $db->getMaxNumber($branchId);
+                $number = $maxNumber + 1;
+            }
+
             $record = [
                 'id' => bin2hex(random_bytes(8)),
-                'number' => intval($_POST['number']),
+                'number' => $number,
                 'name' => $_POST['name'],
                 'email' => strtolower($_POST['email']),
                 'department' => $_POST['department'] ?? '',
                 'general_administration' => $_POST['general_administration'] ?? '',
-                'administration' => $_POST['administration']
+                'administration' => $_POST['administration'],
+                'branch_id' => $branchId
             ];
             $db->insert($record);
             echo json_encode(['status' => 'success', 'entry' => $record]);
@@ -30,7 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'email' => strtolower($_POST['email']),
                 'department' => $_POST['department'] ?? '',
                 'general_administration' => $_POST['general_administration'] ?? '',
-                'administration' => $_POST['administration']
+                'administration' => $_POST['administration'],
+                'branch_id' => $_POST['branch_id'] ?? null
             ];
             $db->update($record);
             echo json_encode(['status' => 'success']);
@@ -40,12 +51,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db->delete($id);
             echo json_encode(['status' => 'success']);
             break;
+        case 'get_max_number':
+            $branchId = $_POST['branch_id'] ?? null;
+            $maxNumber = $db->getMaxNumber($branchId);
+            echo json_encode(['max_number' => $maxNumber]);
+            break;
     }
     exit;
 }
 
-// On GET, just fetch all data for initial load
-$data = $db->getAll();
-error_log("data.php called, returning " . count($data) . " records");
+// On GET, fetch data filtered by user permissions
+$userBranchAccessType = $_GET['branch_access_type'] ?? null;
+$userAssignedBranches = isset($_GET['assigned_branches']) ? json_decode($_GET['assigned_branches'], true) : null;
+
+$data = $db->getAllFiltered($userBranchAccessType, $userAssignedBranches);
+error_log("data.php called, returning " . count($data) . " records for user with access type: " . ($userBranchAccessType ?? 'all'));
 echo json_encode($data);
 ?>
