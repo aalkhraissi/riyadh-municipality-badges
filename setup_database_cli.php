@@ -1,44 +1,45 @@
+#!/usr/bin/env php
 <?php
 /**
- * Database Setup Script for Riyadh Municipality Control System
- *
- * This script creates all necessary database tables and inserts sample data
- * Run this script once to initialize the database
+ * Command Line Database Setup Script
+ * Run with: php setup_database_cli.php
  */
 
 // Include configuration
 require_once './config/config.php';
 
+echo "🚀 Riyadh Municipality Database Setup (CLI Version)\n";
+echo "================================================\n\n";
+
 // Create database connection
 try {
     $pdo = new PDO("mysql:host=$db_host;charset=utf8mb4", $db_usr, $db_password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "<h2>✅ Connected to MySQL server successfully!</h2>";
+    echo "✅ Connected to MySQL server successfully!\n";
 } catch (PDOException $e) {
-    die("<h2>❌ MySQL Connection Failed:</h2><p>" . $e->getMessage() . "</p>");
+    die("❌ MySQL Connection Failed: " . $e->getMessage() . "\n");
 }
 
 // Create database if it doesn't exist
 try {
     $pdo->exec("CREATE DATABASE IF NOT EXISTS `$db_name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-    echo "<h3>✅ Database '$db_name' created or already exists!</h3>";
+    echo "✅ Database '$db_name' created or already exists!\n";
 } catch (PDOException $e) {
-    die("<h2>❌ Database Creation Failed:</h2><p>" . $e->getMessage() . "</p>");
+    die("❌ Database Creation Failed: " . $e->getMessage() . "\n");
 }
 
 // Connect to the specific database
 try {
     $pdo->exec("USE `$db_name`");
-    echo "<h3>✅ Connected to database '$db_name'!</h3>";
+    echo "✅ Connected to database '$db_name'!\n\n";
 } catch (PDOException $e) {
-    die("<h2>❌ Database Selection Failed:</h2><p>" . $e->getMessage() . "</p>");
+    die("❌ Database Selection Failed: " . $e->getMessage() . "\n");
 }
 
-echo "<h1>🚀 Setting up Riyadh Municipality Database Tables...</h1>";
-echo "<div style='font-family: monospace; background: #f5f5f5; padding: 20px; border-radius: 5px;'>";
+echo "📋 Creating database tables...\n";
 
 // Create users table
-echo "<h3>📋 Creating users table...</h3>";
+echo "  👤 Creating users table... ";
 $usersTableSQL = "
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -57,13 +58,13 @@ CREATE TABLE IF NOT EXISTS users (
 
 try {
     $pdo->exec($usersTableSQL);
-    echo "✅ Users table created successfully!<br>";
+    echo "✅ Done\n";
 } catch (PDOException $e) {
-    echo "❌ Failed to create users table: " . $e->getMessage() . "<br>";
+    echo "❌ Failed: " . $e->getMessage() . "\n";
 }
 
 // Create branches table
-echo "<h3>🏢 Creating branches table...</h3>";
+echo "  🏢 Creating branches table... ";
 $branchesTableSQL = "
 CREATE TABLE IF NOT EXISTS branches (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -79,13 +80,13 @@ CREATE TABLE IF NOT EXISTS branches (
 
 try {
     $pdo->exec($branchesTableSQL);
-    echo "✅ Branches table created successfully!<br>";
+    echo "✅ Done\n";
 } catch (PDOException $e) {
-    echo "❌ Failed to create branches table: " . $e->getMessage() . "<br>";
+    echo "❌ Failed: " . $e->getMessage() . "\n";
 }
 
-// Create records table (main employee records)
-echo "<h3>👥 Creating records table...</h3>";
+// Create records table
+echo "  👥 Creating records table... ";
 $recordsTableSQL = "
 CREATE TABLE IF NOT EXISTS records (
     id VARCHAR(32) PRIMARY KEY,
@@ -110,13 +111,13 @@ CREATE TABLE IF NOT EXISTS records (
 
 try {
     $pdo->exec($recordsTableSQL);
-    echo "✅ Records table created successfully!<br>";
+    echo "✅ Done\n";
 } catch (PDOException $e) {
-    echo "❌ Failed to create records table: " . $e->getMessage() . "<br>";
+    echo "❌ Failed: " . $e->getMessage() . "\n";
 }
 
-// Create roles table for role-based access control
-echo "<h3>🔐 Creating roles table...</h3>";
+// Create roles table
+echo "  🔐 Creating roles table... ";
 $rolesTableSQL = "
 CREATE TABLE IF NOT EXISTS roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -129,13 +130,13 @@ CREATE TABLE IF NOT EXISTS roles (
 
 try {
     $pdo->exec($rolesTableSQL);
-    echo "✅ Roles table created successfully!<br>";
+    echo "✅ Done\n";
 } catch (PDOException $e) {
-    echo "❌ Failed to create roles table: " . $e->getMessage() . "<br>";
+    echo "❌ Failed: " . $e->getMessage() . "\n";
 }
 
-// Create user_sessions table for session management
-echo "<h3>📊 Creating user_sessions table...</h3>";
+// Create user_sessions table
+echo "  📊 Creating user_sessions table... ";
 $sessionsTableSQL = "
 CREATE TABLE IF NOT EXISTS user_sessions (
     id VARCHAR(128) PRIMARY KEY,
@@ -151,13 +152,13 @@ CREATE TABLE IF NOT EXISTS user_sessions (
 
 try {
     $pdo->exec($sessionsTableSQL);
-    echo "✅ User sessions table created successfully!<br>";
+    echo "✅ Done\n";
 } catch (PDOException $e) {
-    echo "❌ Failed to create user_sessions table: " . $e->getMessage() . "<br>";
+    echo "❌ Failed: " . $e->getMessage() . "\n";
 }
 
-// Create audit_log table for tracking changes
-echo "<h3>📝 Creating audit_log table...</h3>";
+// Create audit_log table
+echo "  📝 Creating audit_log table... ";
 $auditLogTableSQL = "
 CREATE TABLE IF NOT EXISTS audit_log (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -178,19 +179,15 @@ CREATE TABLE IF NOT EXISTS audit_log (
 
 try {
     $pdo->exec($auditLogTableSQL);
-    echo "✅ Audit log table created successfully!<br>";
+    echo "✅ Done\n\n";
 } catch (PDOException $e) {
-    echo "❌ Failed to create audit_log table: " . $e->getMessage() . "<br>";
+    echo "❌ Failed: " . $e->getMessage() . "\n\n";
 }
 
-echo "</div>";
-
-// Insert sample data
-echo "<h1>📥 Inserting Sample Data...</h1>";
-echo "<div style='font-family: monospace; background: #f5f5f5; padding: 20px; border-radius: 5px;'>";
+echo "📥 Inserting sample data...\n";
 
 // Insert default roles
-echo "<h3>👤 Inserting default roles...</h3>";
+echo "  👤 Inserting roles... ";
 $rolesData = [
     ['name' => 'admin', 'description' => 'Full system access', 'permissions' => json_encode(['*'])],
     ['name' => 'manager', 'description' => 'Branch management access', 'permissions' => json_encode(['read', 'write', 'manage_branch'])],
@@ -201,14 +198,14 @@ foreach ($rolesData as $role) {
     try {
         $stmt = $pdo->prepare("INSERT IGNORE INTO roles (name, description, permissions) VALUES (?, ?, ?)");
         $stmt->execute([$role['name'], $role['description'], $role['permissions']]);
-        echo "✅ Role '{$role['name']}' inserted!<br>";
     } catch (PDOException $e) {
-        echo "❌ Failed to insert role '{$role['name']}': " . $e->getMessage() . "<br>";
+        echo "❌ Failed to insert role '{$role['name']}': " . $e->getMessage() . "\n";
     }
 }
+echo "✅ Done\n";
 
 // Insert sample branches
-echo "<h3>🏢 Inserting sample branches...</h3>";
+echo "  🏢 Inserting branches... ";
 $branchesData = [
     ['name' => 'المركز الرئيسي', 'location' => 'وسط الرياض', 'description' => 'المقر الرئيسي لبلدية الرياض'],
     ['name' => 'فرع الشمال', 'location' => 'شمال الرياض', 'description' => 'فرع الشمال لبلدية الرياض'],
@@ -221,25 +218,25 @@ foreach ($branchesData as $branch) {
     try {
         $stmt = $pdo->prepare("INSERT IGNORE INTO branches (name, location, description) VALUES (?, ?, ?)");
         $stmt->execute([$branch['name'], $branch['location'], $branch['description']]);
-        echo "✅ Branch '{$branch['name']}' inserted!<br>";
     } catch (PDOException $e) {
-        echo "❌ Failed to insert branch '{$branch['name']}': " . $e->getMessage() . "<br>";
+        echo "❌ Failed to insert branch '{$branch['name']}': " . $e->getMessage() . "\n";
     }
 }
+echo "✅ Done\n";
 
 // Insert default admin user
-echo "<h3>👨‍💼 Inserting default admin user...</h3>";
+echo "  👨‍💼 Creating admin user... ";
 try {
     $adminPassword = password_hash('admin123', PASSWORD_DEFAULT);
     $stmt = $pdo->prepare("INSERT IGNORE INTO users (username, password, name, role, is_active) VALUES (?, ?, ?, ?, ?)");
     $stmt->execute(['admin', $adminPassword, 'مدير النظام', 'admin', true]);
-    echo "✅ Admin user 'admin' created with password 'admin123'!<br>";
+    echo "✅ Done\n";
 } catch (PDOException $e) {
-    echo "❌ Failed to create admin user: " . $e->getMessage() . "<br>";
+    echo "❌ Failed: " . $e->getMessage() . "\n";
 }
 
 // Insert sample users
-echo "<h3>👥 Inserting sample users...</h3>";
+echo "  👥 Creating sample users... ";
 $usersData = [
     ['username' => 'manager1', 'password' => 'manager123', 'name' => 'مدير الفرع الأول', 'role' => 'manager'],
     ['username' => 'user1', 'password' => 'user123', 'name' => 'مستخدم تجريبي', 'role' => 'user']
@@ -250,14 +247,14 @@ foreach ($usersData as $user) {
         $hashedPassword = password_hash($user['password'], PASSWORD_DEFAULT);
         $stmt = $pdo->prepare("INSERT IGNORE INTO users (username, password, name, role, is_active) VALUES (?, ?, ?, ?, ?)");
         $stmt->execute([$user['username'], $hashedPassword, $user['name'], $user['role'], true]);
-        echo "✅ User '{$user['username']}' created with password '{$user['password']}'!<br>";
     } catch (PDOException $e) {
-        echo "❌ Failed to create user '{$user['username']}': " . $e->getMessage() . "<br>";
+        echo "❌ Failed to create user '{$user['username']}': " . $e->getMessage() . "\n";
     }
 }
+echo "✅ Done\n";
 
 // Insert sample records
-echo "<h3>📄 Inserting sample records...</h3>";
+echo "  📄 Inserting sample records... ";
 $sampleRecords = [
     ['id' => 'sample001', 'number' => 1, 'name' => 'أحمد محمد علي', 'email' => 'ahmed@example.com', 'department' => 'تقنية المعلومات', 'general_administration' => 'الإدارة العامة لتقنية المعلومات', 'administration' => 'إدارة الأنظمة', 'branch_id' => 1],
     ['id' => 'sample002', 'number' => 2, 'name' => 'فاطمة أحمد حسن', 'email' => 'fatima@example.com', 'department' => 'الموارد البشرية', 'general_administration' => 'الإدارة العامة للموارد البشرية', 'administration' => 'إدارة التطوير الوظيفي', 'branch_id' => 1],
@@ -273,59 +270,37 @@ foreach ($sampleRecords as $record) {
             $record['id'], $record['number'], $record['name'], $record['email'],
             $record['department'], $record['general_administration'], $record['administration'], $record['branch_id']
         ]);
-        echo "✅ Record '{$record['name']}' inserted!<br>";
     } catch (PDOException $e) {
-        echo "❌ Failed to insert record '{$record['name']}': " . $e->getMessage() . "<br>";
+        echo "❌ Failed to insert record '{$record['name']}': " . $e->getMessage() . "\n";
     }
 }
+echo "✅ Done\n\n";
 
-echo "</div>";
+echo "🎉 Database setup completed successfully!\n\n";
 
-// Display setup summary
-echo "<h1>🎉 Database Setup Complete!</h1>";
-echo "<div style='background: #e8f5e8; padding: 20px; border-radius: 5px; border: 1px solid #4caf50;'>";
-echo "<h2>📊 Setup Summary:</h2>";
-echo "<ul>";
-echo "<li>✅ <strong>Database:</strong> $db_name</li>";
-echo "<li>✅ <strong>Tables Created:</strong> users, branches, records, roles, user_sessions, audit_log</li>";
-echo "<li>✅ <strong>Sample Data:</strong> Admin user, sample branches, sample records</li>";
-echo "</ul>";
+echo "📊 SUMMARY:\n";
+echo "==========\n";
+echo "Database: $db_name\n";
+echo "Tables: users, branches, records, roles, user_sessions, audit_log\n";
+echo "Sample Data: ✅ Admin user, sample branches, sample records\n\n";
 
-echo "<h2>🔑 Default Login Credentials:</h2>";
-echo "<ul>";
-echo "<li><strong>Admin:</strong> username: <code>admin</code>, password: <code>admin123</code></li>";
-echo "<li><strong>Manager:</strong> username: <code>manager1</code>, password: <code>manager123</code></li>";
-echo "<li><strong>User:</strong> username: <code>user1</code>, password: <code>user123</code></li>";
-echo "</ul>";
+echo "🔑 LOGIN CREDENTIALS:\n";
+echo "====================\n";
+echo "Admin:    admin / admin123\n";
+echo "Manager:  manager1 / manager123\n";
+echo "User:     user1 / user123\n\n";
 
-echo "<h2>🚀 Next Steps:</h2>";
-echo "<ol>";
-echo "<li>Delete this setup file for security: <code>setup_database.php</code></li>";
-echo "<li>Access the application at: <code>index.php</code></li>";
-echo "<li>Login with admin credentials to manage the system</li>";
-echo "<li>Customize branches and users as needed</li>";
-echo "</ol>";
-echo "</div>";
+echo "🚀 NEXT STEPS:\n";
+echo "=============\n";
+echo "1. Delete setup files for security\n";
+echo "   rm setup_database.php setup_database_cli.php\n\n";
+echo "2. Access the application\n";
+echo "   http://localhost/your-project/index.php\n\n";
+echo "3. Login with admin credentials\n\n";
 
-// Display database info
-echo "<h2>ℹ️ Database Information:</h2>";
-echo "<div style='background: #f0f8ff; padding: 15px; border-radius: 5px;'>";
-echo "<p><strong>Host:</strong> $db_host</p>";
-echo "<p><strong>Database:</strong> $db_name</p>";
-echo "<p><strong>Tables Created:</strong></p>";
-echo "<ul>";
-echo "<li><code>users</code> - User authentication and management</li>";
-echo "<li><code>branches</code> - Branch/division management</li>";
-echo "<li><code>records</code> - Main employee/staff records</li>";
-echo "<li><code>roles</code> - Role-based access control</li>";
-echo "<li><code>user_sessions</code> - Session management</li>";
-echo "<li><code>audit_log</code> - Change tracking and audit trail</li>";
-echo "</ul>";
-echo "</div>";
+echo "⚠️  SECURITY NOTICE:\n";
+echo "==================\n";
+echo "Remember to delete the setup files after successful setup!\n\n";
 
-echo "<div style='margin-top: 30px; padding: 20px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;'>";
-echo "<h3>⚠️ Security Notice:</h3>";
-echo "<p><strong>Important:</strong> Remember to delete this file (<code>setup_database.php</code>) after setup is complete to prevent unauthorized access to your database setup.</p>";
-echo "</div>";
-
+echo "✅ Setup complete! Riyadh Municipality Control System is ready to use.\n";
 ?>
