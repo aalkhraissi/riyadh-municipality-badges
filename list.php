@@ -51,7 +51,6 @@ ob_start();
   </div>
   <div class="fv-row ms-5 w-300px">
     <select id="branchFilter" data-control="select2" data-allow-clear="false" data-hide-search="true" class="form-select form-select-solid" style="min-width: 300px;">
-      <option value="">جميع الفروع</option>
       <?php foreach ($branches as $branch): ?>
         <option value="<?php echo $branch['id']; ?>"><?php echo htmlspecialchars($branch['name']); ?></option>
       <?php endforeach; ?>
