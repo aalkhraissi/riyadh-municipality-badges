@@ -145,22 +145,41 @@ class Database {
 
     public function updateUser($user) {
         try {
-            // Handle assigned_branches properly - convert empty strings to null
-            $assignedBranches = $user['assigned_branches'];
-            if ($assignedBranches === "" || $assignedBranches === null || (is_array($assignedBranches) && empty($assignedBranches))) {
-                $assignedBranchesJson = null;
-            } else {
-                $assignedBranchesJson = json_encode($assignedBranches);
+            // Handle branch access properly
+            $branchAccessJson = null;
+            if (isset($user['assigned_branches'])) {
+                // New format: assigned_branches is passed separately
+                $assignedBranches = $user['assigned_branches'];
+                $branchAccessType = $user['branch_access_type'] ?? 'all_branches';
+
+                if ($assignedBranches === "" || $assignedBranches === null || (is_array($assignedBranches) && empty($assignedBranches))) {
+                    if ($branchAccessType === 'all_branches') {
+                        $branchAccessJson = json_encode([
+                            'type' => 'all_branches',
+                            'assigned_branches' => []
+                        ]);
+                    } else {
+                        $branchAccessJson = null;
+                    }
+                } else {
+                    $branchAccessJson = json_encode([
+                        'type' => $branchAccessType,
+                        'assigned_branches' => $assignedBranches
+                    ]);
+                }
+            } elseif (isset($user['branch_access'])) {
+                // Old format: branch_access is passed as JSON string
+                $branchAccessJson = $user['branch_access'];
             }
 
             error_log("Updating user ID: " . $user['id'] . " with data: " . json_encode($user));
-            error_log("Assigned branches JSON: " . $assignedBranchesJson);
+            error_log("Branch access JSON: " . $branchAccessJson);
 
             $stmt = $this->pdo->prepare("UPDATE users SET name = ?, role = ?, branch_access = ?, is_active = ? WHERE id = ?");
             $result = $stmt->execute([
                 $user['name'],
                 $user['role'] ?? 'user',
-                $assignedBranchesJson,
+                $branchAccessJson,
                 $user['is_active'] ?? true,
                 $user['id']
             ]);

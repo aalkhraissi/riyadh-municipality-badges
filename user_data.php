@@ -61,10 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'id' => $id,
                 'name' => $name,
                 'role' => $role,
-                'branch_access' => $assignedBranches ? json_encode([
-                    'type' => $branchAccessType,
-                    'assigned_branches' => $assignedBranches
-                ]) : null,
+                'branch_access_type' => $branchAccessType,
+                'assigned_branches' => $assignedBranches,
                 'is_active' => true
             ];
 

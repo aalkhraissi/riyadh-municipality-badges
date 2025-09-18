@@ -21,10 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         $branchAccess = json_decode($user['branch_access'], true);
         if ($branchAccess && isset($branchAccess['type'])) {
             $_SESSION['branch_access_type'] = $branchAccess['type'];
-            $_SESSION['assigned_branches'] = $branchAccess['assigned_branches'] ?? [];
+            $_SESSION['assigned_branches'] = json_encode($branchAccess['assigned_branches'] ?? []);
         } else {
             $_SESSION['branch_access_type'] = null;
-            $_SESSION['assigned_branches'] = [];
+            $_SESSION['assigned_branches'] = json_encode([]);
         }
         header('Location: dashboard.php');
         exit;
