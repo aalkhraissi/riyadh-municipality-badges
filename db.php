@@ -104,10 +104,14 @@ class Database {
                 username VARCHAR(50) UNIQUE NOT NULL,
                 password VARCHAR(255) NOT NULL,
                 name VARCHAR(100) NOT NULL,
-                branch_access_type ENUM('all_branches', 'specific_branches') DEFAULT 'all_branches',
-                assigned_branches JSON NULL,
-                is_admin TINYINT(1) DEFAULT 0,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                role ENUM('admin', 'manager', 'user') DEFAULT 'user',
+                branch_access JSON DEFAULT NULL,
+                is_active BOOLEAN DEFAULT TRUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                INDEX idx_username (username),
+                INDEX idx_role (role),
+                INDEX idx_active (is_active)
             )");
             return true;
         } catch (PDOException $e) {
@@ -115,26 +119,26 @@ class Database {
         }
     }
 
-    public function addUser($username, $password, $name, $branchAccessType = 'all_branches', $assignedBranches = null, $isAdmin = 0) {
+    public function addUser($username, $password, $name, $role = 'user', $branchAccess = null, $isActive = true) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $assignedBranchesJson = $assignedBranches ? json_encode($assignedBranches) : null;
-        $stmt = $this->pdo->prepare("INSERT INTO users (username, password, name, branch_access_type, assigned_branches, is_admin) VALUES (?, ?, ?, ?, ?, ?)");
-        return $stmt->execute([$username, $hashedPassword, $name, $branchAccessType, $assignedBranchesJson, $isAdmin]);
+        $branchAccessJson = $branchAccess ? json_encode($branchAccess) : null;
+        $stmt = $this->pdo->prepare("INSERT INTO users (username, password, name, role, branch_access, is_active) VALUES (?, ?, ?, ?, ?, ?)");
+        return $stmt->execute([$username, $hashedPassword, $name, $role, $branchAccessJson, $isActive]);
     }
 
     public function getUserByName($username) {
-        $stmt = $this->pdo->prepare("SELECT id, username, name, branch_access_type, assigned_branches, is_admin FROM users WHERE username = ?");
+        $stmt = $this->pdo->prepare("SELECT id, username, name, role, branch_access, is_active FROM users WHERE username = ?");
         $stmt->execute([$username]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getAllUsers() {
-        $stmt = $this->pdo->query("SELECT id, username, name, branch_access_type, assigned_branches, is_admin, created_at FROM users ORDER BY created_at DESC");
+        $stmt = $this->pdo->query("SELECT id, username, name, role, branch_access, is_active, created_at FROM users ORDER BY created_at DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getUserById($id) {
-        $stmt = $this->pdo->prepare("SELECT id, username, name, branch_access_type, assigned_branches, is_admin, created_at FROM users WHERE id = ?");
+        $stmt = $this->pdo->prepare("SELECT id, username, name, role, branch_access, is_active, created_at FROM users WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -152,12 +156,12 @@ class Database {
             error_log("Updating user ID: " . $user['id'] . " with data: " . json_encode($user));
             error_log("Assigned branches JSON: " . $assignedBranchesJson);
 
-            $stmt = $this->pdo->prepare("UPDATE users SET name = ?, branch_access_type = ?, assigned_branches = ?, is_admin = ? WHERE id = ?");
+            $stmt = $this->pdo->prepare("UPDATE users SET name = ?, role = ?, branch_access = ?, is_active = ? WHERE id = ?");
             $result = $stmt->execute([
                 $user['name'],
-                $user['branch_access_type'],
+                $user['role'] ?? 'user',
                 $assignedBranchesJson,
-                $user['is_admin'],
+                $user['is_active'] ?? true,
                 $user['id']
             ]);
 
@@ -201,31 +205,40 @@ class Database {
 
     public function addRoleColumnsToUsersTable() {
         try {
-            // Add branch_access_type column if it doesn't exist
-            $stmt = $this->pdo->prepare("SHOW COLUMNS FROM users LIKE 'branch_access_type'");
+            // Add role column if it doesn't exist
+            $stmt = $this->pdo->prepare("SHOW COLUMNS FROM users LIKE 'role'");
             $stmt->execute();
             $columnExists = $stmt->fetch();
 
             if (!$columnExists) {
-                $this->pdo->exec("ALTER TABLE users ADD COLUMN branch_access_type ENUM('all_branches', 'specific_branches') DEFAULT 'all_branches'");
+                $this->pdo->exec("ALTER TABLE users ADD COLUMN role ENUM('admin', 'manager', 'user') DEFAULT 'user'");
             }
 
-            // Add assigned_branches column if it doesn't exist
-            $stmt = $this->pdo->prepare("SHOW COLUMNS FROM users LIKE 'assigned_branches'");
+            // Add branch_access column if it doesn't exist
+            $stmt = $this->pdo->prepare("SHOW COLUMNS FROM users LIKE 'branch_access'");
             $stmt->execute();
             $columnExists = $stmt->fetch();
 
             if (!$columnExists) {
-                $this->pdo->exec("ALTER TABLE users ADD COLUMN assigned_branches JSON NULL");
+                $this->pdo->exec("ALTER TABLE users ADD COLUMN branch_access JSON DEFAULT NULL");
             }
 
-            // Add is_admin column if it doesn't exist
-            $stmt = $this->pdo->prepare("SHOW COLUMNS FROM users LIKE 'is_admin'");
+            // Add is_active column if it doesn't exist
+            $stmt = $this->pdo->prepare("SHOW COLUMNS FROM users LIKE 'is_active'");
             $stmt->execute();
             $columnExists = $stmt->fetch();
 
             if (!$columnExists) {
-                $this->pdo->exec("ALTER TABLE users ADD COLUMN is_admin TINYINT(1) DEFAULT 0");
+                $this->pdo->exec("ALTER TABLE users ADD COLUMN is_active BOOLEAN DEFAULT TRUE");
+            }
+
+            // Add updated_at column if it doesn't exist
+            $stmt = $this->pdo->prepare("SHOW COLUMNS FROM users LIKE 'updated_at'");
+            $stmt->execute();
+            $columnExists = $stmt->fetch();
+
+            if (!$columnExists) {
+                $this->pdo->exec("ALTER TABLE users ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
             }
 
             return true;
