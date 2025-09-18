@@ -9,6 +9,8 @@
 // Database connection settings (adjust as needed)
 require_once './config/config.php';
 
+require_once 'db.php';
+
 echo "<h1>🔍 Checking and Updating Database Schema...</h1>";
 echo "<div style='font-family: monospace; background: #f5f5f5; padding: 20px; border-radius: 5px;'>";
 
