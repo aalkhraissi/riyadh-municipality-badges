@@ -15,9 +15,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         $_SESSION['logged_in'] = true;
         $_SESSION['user_name'] = $user['name']; // Store user's name in session
         $_SESSION['user_id'] = $user['id']; // Store user ID
-        $_SESSION['is_admin'] = $user['is_admin']; // Store admin status
-        $_SESSION['branch_access_type'] = $user['branch_access_type']; // Store branch access type
-        $_SESSION['assigned_branches'] = $user['assigned_branches']; // Store assigned branches
+        $_SESSION['is_admin'] = ($user['role'] === 'admin') ? 1 : 0; // Store admin status based on role
+
+        // Parse branch access from JSON
+        $branchAccess = json_decode($user['branch_access'], true);
+        if ($branchAccess && isset($branchAccess['type'])) {
+            $_SESSION['branch_access_type'] = $branchAccess['type'];
+            $_SESSION['assigned_branches'] = $branchAccess['assigned_branches'] ?? [];
+        } else {
+            $_SESSION['branch_access_type'] = null;
+            $_SESSION['assigned_branches'] = [];
+        }
         header('Location: dashboard.php');
         exit;
     } else {

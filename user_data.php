@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $branchAccessType = $_POST['branch_access_type'] ?? 'all_branches';
             $assignedBranches = isset($_POST['assigned_branches']) ? $_POST['assigned_branches'] : null;
             $isAdmin = isset($_POST['is_admin']) ? 1 : 0;
+            $role = $isAdmin ? 'admin' : 'user'; // Convert is_admin to role
 
             // Check if username already exists
             $existingUser = $db->getUserByName($username);
@@ -25,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
-            $result = $db->addUser($username, $password, $name, $branchAccessType, $assignedBranches, $isAdmin);
+            $result = $db->addUser($username, $password, $name, $role, $assignedBranches, true);
             if ($result) {
                 $newUser = $db->getUserByName($username);
                 echo json_encode(['status' => 'success', 'entry' => $newUser]);
@@ -40,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $branchAccessType = $_POST['branch_access_type'] ?? 'all_branches';
             $assignedBranches = isset($_POST['assigned_branches']) ? $_POST['assigned_branches'] : null;
             $isAdmin = isset($_POST['is_admin']) ? 1 : 0;
+            $role = $isAdmin ? 'admin' : 'user'; // Convert is_admin to role
 
             // Handle assigned_branches - ensure it's an array if it exists
             if ($assignedBranches !== null && $assignedBranches !== "") {
@@ -58,9 +60,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = [
                 'id' => $id,
                 'name' => $name,
-                'branch_access_type' => $branchAccessType,
-                'assigned_branches' => $assignedBranches,
-                'is_admin' => $isAdmin
+                'role' => $role,
+                'branch_access' => $assignedBranches ? json_encode([
+                    'type' => $branchAccessType,
+                    'assigned_branches' => $assignedBranches
+                ]) : null,
+                'is_active' => true
             ];
 
             // First check if user exists
