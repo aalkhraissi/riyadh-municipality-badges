@@ -7,12 +7,7 @@
  */
 
 // Database connection settings (adjust as needed)
-$db_host = 'localhost';
-$db_name = 'riyadh_municipality'; // Change this to your database name
-$db_usr = 'root';
-$db_password = ''; // Change this if you have a password
-
-require_once 'db.php';
+require_once './config/config.php';
 
 echo "<h1>🔍 Checking and Updating Database Schema...</h1>";
 echo "<div style='font-family: monospace; background: #f5f5f5; padding: 20px; border-radius: 5px;'>";
